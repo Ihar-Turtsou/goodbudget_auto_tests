@@ -7,3 +7,6 @@ allure-python-commons~=2.15.0
 selenium==4.15.1
 
 webdriver-manager
+
+requests
+jsonschema
