@@ -6,11 +6,55 @@ from dotenv import load_dotenv
 import os
 from selene import browser
 from utils import attach
+import requests
 
 
 @pytest.fixture(scope="session", autouse=True)
 def load_env():
     load_dotenv()
+
+
+@pytest.fixture(scope="session")
+def credentials():
+    return {
+        "base_url": os.getenv("GB_BASE_URL", "https://goodbudget.com"),
+        "username": os.getenv("GB_USERNAME"),
+        "password": os.getenv("GB_PASSWORD"),
+    }
+
+
+
+@pytest.fixture(scope="session")
+def session_cookie():
+    base_url = os.getenv("GB_BASE_URL", "https://goodbudget.com")
+    username = os.getenv("GB_USERNAME")
+    password = os.getenv("GB_PASSWORD")
+
+    session = requests.Session()
+    session.get(f"{base_url}/login", timeout=15)
+    response = session.post(
+        f"{base_url}/login_check",
+        data={"_username": username, "_password": password},
+        allow_redirects=False,
+        timeout=15,
+    )
+    assert response.status_code in (302, 303), f"Login failed: {response.status_code}"
+    cookie_value = session.cookies.get("GBSESS")
+    assert cookie_value, "GBSESS cookie not set"
+    return cookie_value
+
+
+@pytest.fixture
+def browser_logged_in(session_cookie):
+    browser.open("/")
+    browser.driver.add_cookie({
+        "name": "GBSESS",
+        "value": session_cookie,
+        "path": "/",
+        "domain": "goodbudget.com",
+    })
+    browser.open("/home")
+    yield
 
 # @pytest.fixture(scope="function")
 # def remote_browser_setup(request):
