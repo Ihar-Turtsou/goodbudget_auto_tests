@@ -22,7 +22,7 @@ def get_envelope_uuid(session_cookie,credentials, envelope_name):
                         return envelope.get("Uuid")
     return None
 
-def get_transactions_by_uuid(session_cookie,credentials, value_envelope_uuid):
+def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelope_uuid):
     session = requests.Session()
     session.cookies.set("GBSESS", session_cookie, domain="goodbudget.com", path="/")
 
@@ -69,3 +69,5 @@ def add_transactions_by_envelope_uuid(session_cookie, credentials, value_envelop
         data=form_data,
         timeout=10
     )
+    time.sleep(2)
+    return {"name": transaction_name, "uuid": transaction_uuid}
