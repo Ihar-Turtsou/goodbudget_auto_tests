@@ -20,6 +20,8 @@ def credentials():
         "base_url": os.getenv("GB_BASE_URL", "https://goodbudget.com"),
         "username": os.getenv("GB_USERNAME"),
         "password": os.getenv("GB_PASSWORD"),
+        "household_id":os.getenv("HOUSEHOLD_ID"),
+        "account_uuid": os.getenv("ACCOUNT_UUID")
     }
 
 
