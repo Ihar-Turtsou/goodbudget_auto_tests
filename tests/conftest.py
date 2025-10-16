@@ -95,8 +95,20 @@ def browser_logged_in(session_cookie):
 
 @pytest.fixture(autouse=True)
 def setup_browser():
+
+    # options = Options()
+    # prefs = {
+    #     "download.default_directory": os.path.abspath("resources/downloads"),
+    #     "download.prompt_for_download": False,
+    #     "download.directory_upgrade": True,
+    #     "safebrowsing.enabled": True,
+    # }
+    # options.add_experimental_option("prefs", prefs)
+    # browser.config.driver_options = options
+
     browser.config.base_url = 'https://goodbudget.com'
     browser.config.timeout = 5
     browser.config.window_width = 1920
     browser.config.window_height = 1080
+
     yield

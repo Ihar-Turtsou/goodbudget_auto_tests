@@ -6,3 +6,5 @@ __pycache__/
 allure-results
 
 .env
+
+resources/downloads

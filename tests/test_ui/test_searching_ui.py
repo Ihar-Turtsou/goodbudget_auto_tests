@@ -4,7 +4,7 @@ from utils.api_helpers import get_envelope_uuid, add_transactions_by_envelope_uu
 
 @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
-def test_add_transaction_ui(setup_browser, browser_logged_in, session_cookie, credentials):
+def test_transaction_searching_ui(setup_browser, browser_logged_in, session_cookie, credentials):
 
     transaction_name = f'Saving № {random.randint(0, 100)}'
 
