@@ -37,12 +37,12 @@ def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelop
     return transaction
 
 
-def add_transactions_by_envelope_uuid(session_cookie, credentials, value_envelope_uuid):
+def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, value_envelope_uuid):
     session = requests.Session()
     session.cookies.set("GBSESS", session_cookie, domain="goodbudget.com", path="/")
 
     transaction_uuid = str(uuid.uuid4())
-    transaction_name = "Some API Transaction"
+    # transaction_name = "Some API Transaction"
 
     d_json = {
         "created": "2025-10-14 23:59:59",
