@@ -7,7 +7,9 @@ import os
 from selene import browser
 from utils import attach
 import requests
-
+from goodbudget.ui.pages.login_page import LoginPage
+from goodbudget.ui.pages.home_page import HomePage
+from goodbudget.ui.pages.logout_page import LogoutPage
 
 @pytest.fixture(scope="session", autouse=True)
 def load_env():
@@ -92,6 +94,21 @@ def browser_logged_in(session_cookie):
 #         browser.quit()
 #     except (InvalidSessionIdException, WebDriverException):
 #         pass
+
+
+@pytest.fixture()
+def login_page():
+    return LoginPage()
+
+@pytest.fixture()
+def logout_page():
+    return LogoutPage()
+
+@pytest.fixture()
+def home_page():
+    return HomePage()
+
+
 
 @pytest.fixture(autouse=True)
 def setup_browser():

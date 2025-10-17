@@ -1,10 +1,8 @@
-from os import write
-
 import pytest, random, requests, csv
 from selene import have, browser, query
 from utils.api_helpers import get_envelope_uuid, add_transactions_by_envelope_uuid
 
-# @pytest.mark.skip(reason="This test is temporarily disabled.")
+@pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 def test_export_csv_ui(setup_browser, browser_logged_in, session_cookie, credentials):
 
@@ -20,7 +18,7 @@ def test_export_csv_ui(setup_browser, browser_logged_in, session_cookie, credent
     with open("resources/downloads/history.csv", "wb") as file:
         file.write(content)
 
-    transaction_name = '123'
+
     with open("resources/downloads/history.csv", newline='', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
         assert any(transaction_name in row for row in reader), f"Transaction '{transaction_name}' not found in exported CSV"

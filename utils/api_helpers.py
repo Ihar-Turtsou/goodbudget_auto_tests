@@ -4,10 +4,15 @@ import json
 import base64
 import uuid
 
-def get_envelope_uuid(session_cookie,credentials, envelope_name):
 
+def make_session(session_cookie):
     session = requests.Session()
     session.cookies.set("GBSESS", session_cookie, domain="goodbudget.com", path="/")
+    return session
+
+def get_envelope_uuid(session_cookie,credentials, envelope_name):
+
+    session = make_session(session_cookie)
 
     response = session.get(f"{credentials["base_url"]}/api/envelopes", timeout=10)
     response.raise_for_status()
@@ -23,8 +28,7 @@ def get_envelope_uuid(session_cookie,credentials, envelope_name):
     return None
 
 def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelope_uuid):
-    session = requests.Session()
-    session.cookies.set("GBSESS", session_cookie, domain="goodbudget.com", path="/")
+    session = make_session(session_cookie)
 
     time.sleep(2)
 
@@ -38,8 +42,7 @@ def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelop
 
 
 def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, value_envelope_uuid):
-    session = requests.Session()
-    session.cookies.set("GBSESS", session_cookie, domain="goodbudget.com", path="/")
+    session = make_session(session_cookie)
 
     transaction_uuid = str(uuid.uuid4())
     # transaction_name = "Some API Transaction"
