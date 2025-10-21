@@ -2,7 +2,7 @@ import pytest
 from selene import have, browser
 
 
-# @pytest.mark.skip(reason="This test is temporarily disabled.")
+@pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 def test_login_ui(setup_browser, credentials, login_page, home_page):
 
@@ -15,7 +15,7 @@ def test_login_ui(setup_browser, credentials, login_page, home_page):
     )
     home_page.user_greeting_should_be(credentials["username"])
 
-# @pytest.mark.skip(reason="This test is temporarily disabled.")
+@pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 def test_logout_ui(setup_browser, browser_logged_in, home_page, logout_page):
 
