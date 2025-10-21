@@ -12,7 +12,8 @@ def test_transaction_searching_ui(setup_browser, browser_logged_in, session_cook
 
     (
         home_page
-        .search_in_all_transactions(transaction_name)
+        .set_search_query(transaction_name)
+        .submit_search()
         .searching_result_should_be(transaction_name)
     )
 

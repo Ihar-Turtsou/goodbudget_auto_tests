@@ -11,8 +11,11 @@ class HomePage:
         browser.element('a[href="/logout"]').click()
         return self
 
-    def search_in_all_transactions(self,transaction_name):
+    def set_search_query(self,transaction_name):
         browser.element('.ui-autocomplete-input').set_value(transaction_name)
+        return self
+
+    def submit_search(self):
         browser.element('[id="trans-search-btn"]').click()
         return self
 
