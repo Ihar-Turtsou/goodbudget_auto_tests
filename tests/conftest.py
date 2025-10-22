@@ -60,6 +60,20 @@ def browser_logged_in(session_cookie):
     browser.open("/home")
     yield
 
+@pytest.fixture
+def temp_cookie(credentials):
+    session = requests.Session()
+    session.get(f'{credentials["base_url"]}/login', timeout=15)
+    request = session.post(
+        f'{credentials["base_url"]}/login_check',
+        data={"_username": credentials["username"], "_password": credentials["password"]},
+        allow_redirects=False, timeout=15
+    )
+    cookie = session.cookies.get("GBSESS")
+    assert cookie
+    return cookie
+
+
 # @pytest.fixture(scope="function")
 # def remote_browser_setup(request):
 #

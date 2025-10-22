@@ -1,14 +1,28 @@
 import pytest, random, json
 from selene import have, browser
-from utils.api_helpers import get_envelope_uuid, get_transactions_by_envelope_uuid, add_transactions_by_envelope_uuid, delete_transaction_by_uuid
+from utils.api_helpers import (
+    get_envelope_uuid,
+    get_transactions_by_envelope_uuid,
+    add_transactions_by_envelope_uuid,
+    delete_transaction_by_uuid
+)
 
 
 # @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
-def test_add_transaction_ui(setup_browser, browser_logged_in,session_cookie, credentials, home_page):
+def test_add_transaction_ui(
+        setup_browser,
+        browser_logged_in,
+        session_cookie,
+        credentials,
+        home_page):
     transaction_name = f'Payment for rent {random.randint(0, 100)}'
     transaction_amount = random.randint(10, 300)
-    envelope_uuid =  get_envelope_uuid(session_cookie, credentials, 'Groceries')
+    envelope_uuid =  get_envelope_uuid(
+        session_cookie,
+        credentials,
+        'Groceries'
+    )
 
 
     (
@@ -21,7 +35,11 @@ def test_add_transaction_ui(setup_browser, browser_logged_in,session_cookie, cre
      )
 
 
-    transactions = get_transactions_by_envelope_uuid(session_cookie, credentials, envelope_uuid)
+    transactions = get_transactions_by_envelope_uuid(
+        session_cookie,
+        credentials,
+        envelope_uuid
+    )
     items = transactions.get('items', [])
 
     assert any(
@@ -32,15 +50,33 @@ def test_add_transaction_ui(setup_browser, browser_logged_in,session_cookie, cre
     ), f" Transaction '{transaction_name}' (amount={transaction_amount}) not found in envelope {envelope_uuid}"
 
     transaction_data = next((t for t in items if t.get('receiver') == transaction_name), None)
-    delete_transaction_by_uuid(session_cookie, credentials, transaction_data['uuid'])
+    delete_transaction_by_uuid(
+        session_cookie,
+        credentials,
+        transaction_data['uuid']
+    )
 
 
 # @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
-def test_edit_transaction_ui(setup_browser, browser_logged_in, session_cookie, credentials, home_page):
-    envelope_uuid = get_envelope_uuid(session_cookie, credentials, 'Gas')
+def test_edit_transaction_ui(
+        setup_browser,
+        browser_logged_in,
+        session_cookie,
+        credentials,
+        home_page
+):
+    envelope_uuid = get_envelope_uuid(
+        session_cookie,
+        credentials,
+        'Gas')
     transaction_name = 'Some payment for gas'
-    transaction_data = add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, envelope_uuid)
+    transaction_data = add_transactions_by_envelope_uuid(
+        session_cookie,
+        credentials,
+        transaction_name,
+        envelope_uuid
+    )
     transaction_name_edited = f'Payment for gas {random.randint(0, 100)}'
     transaction_amount_edited = random.randint(300, 900)
 
@@ -56,7 +92,11 @@ def test_edit_transaction_ui(setup_browser, browser_logged_in, session_cookie, c
     )
 
 
-    transactions = get_transactions_by_envelope_uuid(session_cookie, credentials, envelope_uuid)
+    transactions = get_transactions_by_envelope_uuid(
+        session_cookie,
+        credentials,
+        envelope_uuid
+    )
     items = transactions.get('items', [])
 
     assert any(
@@ -66,15 +106,34 @@ def test_edit_transaction_ui(setup_browser, browser_logged_in, session_cookie, c
         for t in items
     ), f" Transaction '{transaction_name_edited}' (amount={transaction_amount_edited}) not found in envelope {envelope_uuid}"
 
-    delete_transaction_by_uuid(session_cookie, credentials, transaction_data['uuid'])
+    delete_transaction_by_uuid(
+        session_cookie,
+        credentials,
+        transaction_data['uuid']
+    )
 
 
 # @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
-def test_delete_transaction_ui(setup_browser, browser_logged_in, session_cookie, credentials, home_page):
-    envelope_uuid = get_envelope_uuid(session_cookie, credentials, 'Chemical')
+def test_delete_transaction_ui(
+        setup_browser,
+        browser_logged_in,
+        session_cookie,
+        credentials,
+        home_page
+):
+    envelope_uuid = get_envelope_uuid(
+        session_cookie,
+        credentials,
+        'Chemical'
+    )
     transaction_name = f'Payment for deletion {random.randint(0, 100)}'
-    transaction_data = add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, envelope_uuid)
+    transaction_data = add_transactions_by_envelope_uuid(
+        session_cookie,
+        credentials,
+        transaction_name,
+        envelope_uuid
+    )
 
 
     (
@@ -84,7 +143,11 @@ def test_delete_transaction_ui(setup_browser, browser_logged_in, session_cookie,
         .delete_transaction()
     )
 
-    transactions = get_transactions_by_envelope_uuid(session_cookie, credentials, envelope_uuid)
+    transactions = get_transactions_by_envelope_uuid(
+        session_cookie,
+        credentials,
+        envelope_uuid
+    )
     items = transactions.get('items', [])
 
     assert all(t.get('uuid') != transaction_data['uuid'] for t in items)

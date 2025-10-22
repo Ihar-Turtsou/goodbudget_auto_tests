@@ -2,6 +2,11 @@ from selene import have, browser
 
 class HomePage:
 
+    def open_home_with_temp_cookie(self, credentials, temp_cookie):
+        browser.open("/")
+        browser.driver.add_cookie({"name": "GBSESS", "value": temp_cookie})
+        browser.open(f'{credentials["base_url"]}/home')
+        return self
 
     def user_greeting_should_be(self, username):
         browser.element('[id="hi"]').should(have.text(username))
