@@ -7,4 +7,5 @@ allure-results
 
 .env
 
-resources/downloads
+resources/downloads/*
+!resources/downloads/

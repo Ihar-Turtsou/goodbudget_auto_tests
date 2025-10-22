@@ -1,6 +1,6 @@
 import pytest, random
 from selene import have, browser
-from utils.api_helpers import get_envelope_uuid, add_transactions_by_envelope_uuid
+from utils.api_helpers import get_envelope_uuid, add_transactions_by_envelope_uuid, delete_transaction_by_uuid
 
 @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
@@ -8,7 +8,7 @@ def test_transaction_searching_ui(setup_browser, browser_logged_in, session_cook
 
     transaction_name = f'Saving № {random.randint(0, 100)}'
     envelope_uuid =  get_envelope_uuid(session_cookie, credentials, 'Savings')
-    add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, envelope_uuid)
+    transaction_data = add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, envelope_uuid)
 
     (
         home_page
@@ -16,6 +16,8 @@ def test_transaction_searching_ui(setup_browser, browser_logged_in, session_cook
         .submit_search()
         .searching_result_should_be(transaction_name)
     )
+
+    delete_transaction_by_uuid(session_cookie, credentials, transaction_data['uuid'])
 
 
 
