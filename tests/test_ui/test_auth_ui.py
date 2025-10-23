@@ -1,5 +1,4 @@
-import pytest, requests
-from selene import have, browser
+import pytest
 
 
 # @pytest.mark.skip(reason="This test is temporarily disabled.")

@@ -1,16 +1,19 @@
-import pytest, random, requests, csv
-from selene import have, browser, query
+import pytest, random
 from utils.api_helpers import (
     get_envelope_uuid,
     add_transactions_by_envelope_uuid,
     delete_transaction_by_uuid
 )
+from utils.file_helpers import (
+    download_file_from_url,
+    assert_csv_contains,
+    get_download_path)
+
 
 # @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 def test_export_csv_ui(
         setup_browser,
-        # browser_logged_in,
         session_cookie,
         credentials,
         home_page
@@ -30,22 +33,15 @@ def test_export_csv_ui(
     )
 
     home_page.open_home_with_cookie(credentials, session_cookie)
-    download_url = browser.element('[id="export-txns"]').get(query.attribute("href"))
+    download_url = home_page.get_export_csv_link()
 
-    content = requests.get(url=download_url, cookies={'GBSESS': session_cookie}).content
-
-    with open("resources/downloads/history.csv", "wb") as file:
-        file.write(content)
-
-
-    with open("resources/downloads/history.csv", newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        assert any(
-            transaction_name
-            in row
-            for row
-            in reader
-        ), f"Transaction '{transaction_name}' not found in exported CSV"
+    csv_path = get_download_path("history.csv")
+    download_file_from_url(
+        download_url,
+        session_cookie,
+        csv_path
+    )
+    assert_csv_contains(csv_path, transaction_name)
 
     delete_transaction_by_uuid(
         session_cookie,

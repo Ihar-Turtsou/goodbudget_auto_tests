@@ -1,5 +1,4 @@
-import pytest, random, json
-from selene import have, browser
+import pytest, random
 from utils.api_helpers import (
     get_envelope_uuid,
     get_transactions_by_envelope_uuid,
@@ -12,7 +11,6 @@ from utils.api_helpers import (
 @pytest.mark.ui
 def test_add_transaction_ui(
         setup_browser,
-        # browser_logged_in,
         session_cookie,
         credentials,
         home_page):
@@ -24,7 +22,6 @@ def test_add_transaction_ui(
         'Groceries'
     )
 
-
     (
         home_page
         .open_home_with_cookie(credentials, session_cookie)
@@ -34,7 +31,6 @@ def test_add_transaction_ui(
         .set_transaction_envelope(envelope_uuid)
         .save_transaction()
      )
-
 
     transactions = get_transactions_by_envelope_uuid(
         session_cookie,
@@ -62,7 +58,6 @@ def test_add_transaction_ui(
 @pytest.mark.ui
 def test_edit_transaction_ui(
         setup_browser,
-        # browser_logged_in,
         session_cookie,
         credentials,
         home_page
@@ -81,7 +76,6 @@ def test_edit_transaction_ui(
     transaction_name_edited = f'Payment for gas {random.randint(0, 100)}'
     transaction_amount_edited = random.randint(300, 900)
 
-
     (
         home_page
         .open_home_with_cookie(credentials, session_cookie)
@@ -92,7 +86,6 @@ def test_edit_transaction_ui(
         .set_transaction_envelope(envelope_uuid)
         .save_transaction()
     )
-
 
     transactions = get_transactions_by_envelope_uuid(
         session_cookie,
@@ -119,7 +112,6 @@ def test_edit_transaction_ui(
 @pytest.mark.ui
 def test_delete_transaction_ui(
         setup_browser,
-        # browser_logged_in,
         session_cookie,
         credentials,
         home_page
@@ -136,7 +128,6 @@ def test_delete_transaction_ui(
         transaction_name,
         envelope_uuid
     )
-
 
     (
         home_page

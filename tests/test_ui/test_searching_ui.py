@@ -1,10 +1,10 @@
 import pytest, random
-from selene import have, browser
 from utils.api_helpers import (
     get_envelope_uuid,
     add_transactions_by_envelope_uuid,
     delete_transaction_by_uuid
 )
+
 
 # @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui

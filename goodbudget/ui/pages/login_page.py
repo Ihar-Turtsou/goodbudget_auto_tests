@@ -1,4 +1,4 @@
-from selene import have, browser
+from selene import browser
 import allure
 
 class LoginPage:
