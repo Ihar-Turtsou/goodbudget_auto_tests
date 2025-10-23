@@ -10,9 +10,10 @@ from utils.api_helpers import (
 @pytest.mark.ui
 def test_export_csv_ui(
         setup_browser,
-        browser_logged_in,
+        # browser_logged_in,
         session_cookie,
-        credentials
+        credentials,
+        home_page
 ):
 
     transaction_name = f'Export № {random.randint(500, 1000)}'
@@ -28,6 +29,7 @@ def test_export_csv_ui(
         envelope_uuid
     )
 
+    home_page.open_home_with_cookie(credentials, session_cookie)
     download_url = browser.element('[id="export-txns"]').get(query.attribute("href"))
 
     content = requests.get(url=download_url, cookies={'GBSESS': session_cookie}).content

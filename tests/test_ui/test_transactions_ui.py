@@ -12,7 +12,7 @@ from utils.api_helpers import (
 @pytest.mark.ui
 def test_add_transaction_ui(
         setup_browser,
-        browser_logged_in,
+        # browser_logged_in,
         session_cookie,
         credentials,
         home_page):
@@ -27,6 +27,7 @@ def test_add_transaction_ui(
 
     (
         home_page
+        .open_home_with_cookie(credentials, session_cookie)
         .add_transaction()
         .fill_transaction_name(transaction_name)
         .fill_transaction_amount(transaction_amount)
@@ -61,7 +62,7 @@ def test_add_transaction_ui(
 @pytest.mark.ui
 def test_edit_transaction_ui(
         setup_browser,
-        browser_logged_in,
+        # browser_logged_in,
         session_cookie,
         credentials,
         home_page
@@ -83,6 +84,7 @@ def test_edit_transaction_ui(
 
     (
         home_page
+        .open_home_with_cookie(credentials, session_cookie)
         .choose_envelope('Gas')
         .edit_transaction(transaction_data['name'])
         .fill_transaction_name(transaction_name_edited)
@@ -117,7 +119,7 @@ def test_edit_transaction_ui(
 @pytest.mark.ui
 def test_delete_transaction_ui(
         setup_browser,
-        browser_logged_in,
+        # browser_logged_in,
         session_cookie,
         credentials,
         home_page
@@ -138,6 +140,7 @@ def test_delete_transaction_ui(
 
     (
         home_page
+        .open_home_with_cookie(credentials, session_cookie)
         .choose_envelope('Chemical')
         .edit_transaction(transaction_data['name'])
         .delete_transaction()

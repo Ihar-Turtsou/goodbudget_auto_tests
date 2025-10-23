@@ -26,12 +26,14 @@ def test_login_ui(
 def test_logout_ui(
         setup_browser,
         credentials,
-        home_page, logout_page, temp_cookie
+        home_page,
+        logout_page,
+        temp_cookie
 ):
 
     (
         home_page
-        .open_home_with_temp_cookie(credentials,temp_cookie)
+        .open_home_with_cookie(credentials, temp_cookie)
         .logout_from_account()
     )
 

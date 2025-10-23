@@ -10,13 +10,12 @@ from utils.api_helpers import (
 @pytest.mark.ui
 def test_transaction_searching_ui(
         setup_browser,
-        browser_logged_in,
         session_cookie,
         credentials,
         home_page
 ):
 
-    transaction_name = f'Saving № {random.randint(0, 100)}'
+    transaction_name = f'Saving № {random.randint(2000, 3000)}'
     envelope_uuid =  get_envelope_uuid(
         session_cookie,
         credentials,
@@ -30,6 +29,7 @@ def test_transaction_searching_ui(
 
     (
         home_page
+        .open_home_with_cookie(credentials, session_cookie)
         .set_search_query(transaction_name)
         .submit_search()
         .searching_result_should_be(transaction_name)

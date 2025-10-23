@@ -49,18 +49,6 @@ def session_cookie():
 
 
 @pytest.fixture
-def browser_logged_in(session_cookie):
-    browser.open("/")
-    browser.driver.add_cookie({
-        "name": "GBSESS",
-        "value": session_cookie,
-        "path": "/",
-        "domain": "goodbudget.com",
-    })
-    browser.open("/home")
-    yield
-
-@pytest.fixture
 def temp_cookie(credentials):
     session = requests.Session()
     session.get(f'{credentials["base_url"]}/login', timeout=15)
