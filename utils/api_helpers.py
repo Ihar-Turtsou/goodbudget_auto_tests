@@ -1,8 +1,4 @@
-import requests, time, base64, json, secrets, re
-import pytest
-import json
-import base64
-import uuid
+import requests, time, json, base64, uuid
 
 
 def make_session(session_cookie):
@@ -46,7 +42,6 @@ def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_n
     session = make_session(session_cookie)
 
     transaction_uuid = str(uuid.uuid4())
-    # transaction_name = "Some API Transaction"
 
     d_json = {
         "created": "2025-10-14 23:59:59",

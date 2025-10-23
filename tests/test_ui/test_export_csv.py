@@ -1,4 +1,4 @@
-import pytest, random
+import pytest, random, allure
 from utils.api_helpers import (
     get_envelope_uuid,
     add_transactions_by_envelope_uuid,
@@ -10,8 +10,14 @@ from utils.file_helpers import (
     get_download_path)
 
 
-# @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
+@pytest.mark.smoke
+@pytest.mark.regression
+@allure.tag("web", "export")
+@allure.feature("Export")
+@allure.story("Export transactions to CSV")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.link("https://goodbudget.com/home", name="Export button location")
 def test_export_csv_ui(
         setup_browser,
         session_cookie,
