@@ -1,4 +1,7 @@
-import requests, time, json, base64, uuid
+import requests, time, json, base64, uuid, allure
+from utils.schema import validate_transaction_save_request
+from utils.logger_allure import  attach_response, attach_request
+from utils.logger_console import log_response
 
 
 def make_session(session_cookie):
@@ -6,9 +9,12 @@ def make_session(session_cookie):
     session.cookies.set("GBSESS", session_cookie, domain="goodbudget.com", path="/")
     return session
 
+def api_url(credentials, endpoint):
+    base_url = credentials["base_url"].rstrip("/")
+    return f"{base_url}{endpoint}"
+
 
 def get_envelope_uuid(session_cookie,credentials, envelope_name):
-
     session = make_session(session_cookie)
 
     response = session.get(f"{credentials["base_url"]}/api/envelopes", timeout=10)
@@ -24,6 +30,8 @@ def get_envelope_uuid(session_cookie,credentials, envelope_name):
                         return envelope.get("Uuid")
     return None
 
+
+
 def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelope_uuid):
     session = make_session(session_cookie)
 
@@ -38,10 +46,14 @@ def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelop
     return transactions
 
 
+
+
+
 def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_name, value_envelope_uuid):
     session = make_session(session_cookie)
 
     transaction_uuid = str(uuid.uuid4())
+
 
     d_json = {
         "created": "2025-10-14 23:59:59",
@@ -63,13 +75,20 @@ def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_n
         "d": base64.b64encode(json.dumps(d_json).encode()).decode()
     }
 
-    response = session.post(
-        f"{credentials["base_url"]}/api/transactions/save?cltVersion=web",
-        data=form_data,
-        timeout=10
-    )
+    validate_transaction_save_request(form_data)
+
+    url = api_url(credentials,"/api/transactions/save?cltVersion=web")
+    attach_request("POST", url, body=form_data, cookies=session_cookie)
+
+    response = session.post(url, data=form_data, timeout=10)
+
+    attach_response(response)
+    log_response(response)
+
     time.sleep(2)
-    return {"name": transaction_name, "uuid": transaction_uuid}
+    return {"name": transaction_name, "uuid": transaction_uuid, "response": response}
+
+
 
 def get_existing_transaction_data(transaction_uuid, credentials, session_cookie):
     session = make_session(session_cookie)
@@ -80,6 +99,8 @@ def get_existing_transaction_data(transaction_uuid, credentials, session_cookie)
     get_response.raise_for_status()
     transaction_data = get_response.json()
     return transaction_data
+
+
 
 
 def delete_transaction_by_uuid(session_cookie, credentials, transaction_uuid):

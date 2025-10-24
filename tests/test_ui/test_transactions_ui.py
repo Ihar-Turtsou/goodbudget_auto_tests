@@ -153,4 +153,4 @@ class TestTransactionUi:
         )
         items = transactions.get('items', [])
 
-        assert all(t.get('uuid') != transaction_data['uuid'] for t in items)
+        assert all(t.get('uuid') != transaction_data['uuid'] for t in items), "Transaction still present after delete"
