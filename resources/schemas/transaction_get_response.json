@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["uuid", "receiver", "created", "amount", "type", "envelope", "account"],
+  "properties": {
+    "uuid": { "type": "string" },
+    "receiver": { "type": "string" },
+    "created": { "type": "string" },
+    "amount": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]{1,2})?$" },
+    "type": { "type": "string" },
+    "status": { "type": ["string", "null"] },
+    "envelope": { "type": "string" },
+    "envelope_name": { "type": "string" },
+    "account": { "type": "string" },
+    "account_name": { "type": "string" },
+    "nonce": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

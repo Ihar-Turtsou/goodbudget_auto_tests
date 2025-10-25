@@ -1,4 +1,4 @@
-import pytest, random, allure
+import pytest, random, allure, json
 from utils.api_helpers import (
     get_envelope_uuid,
     get_transactions_by_envelope_uuid,
@@ -6,6 +6,8 @@ from utils.api_helpers import (
     delete_transaction_by_uuid
 )
 from utils.schema import validate_schema
+from utils.logger_allure import  attach_response, attach_request
+from utils.logger_console import log_response
 
 @pytest.mark.api
 @pytest.mark.regression
@@ -17,24 +19,28 @@ from utils.schema import validate_schema
 def test_add_transaction_api(setup_browser, session_cookie, credentials):
 
     with allure.step('Prepare test data'):
-        envelope_uuid = get_envelope_uuid(session_cookie,credentials,'API')
-        transaction_name = f'API transaction created № {random.randint(0, 100)}'
+        envelope_name = 'Hobby'
+        envelope_uuid = get_envelope_uuid(session_cookie,credentials,envelope_name)
+        txn_name = f'API transaction created № {random.randint(0, 100)}'
 
     with allure.step('Send POST request to create a transaction'):
-        transaction_data = add_transactions_by_envelope_uuid(session_cookie,credentials,transaction_name,envelope_uuid)
+        txn_data = add_transactions_by_envelope_uuid(session_cookie,credentials,txn_name,envelope_uuid)
+        attach_request(txn_data['request'])
+        attach_response(txn_data['response'])
+        log_response(txn_data['response'])
 
     with allure.step('Validate response structure and status code'):
-        assert transaction_data['response'].status_code == 200
-        validate_schema(transaction_data['response'].json(), "transaction_save_response.json" )
+        assert txn_data['response'].status_code == 200
+        validate_schema(txn_data['response'].json(), "transaction_save_response.json" )
 
     with allure.step('Verify transaction presence via GET /api/transactions'):
-        transactions = get_transactions_by_envelope_uuid(session_cookie,credentials,envelope_uuid)
-        items = transactions.get('items', [])
+        txns = get_transactions_by_envelope_uuid(session_cookie,credentials,envelope_uuid)
+        items = txns.json().get('items', [])
         assert any(
-            t.get('receiver') == transaction_name
+            t.get('receiver') == txn_name
             and t.get('envelope_uuid') == envelope_uuid
             for t in items
-        ), f" Transaction '{transaction_name}' not found in envelope {envelope_uuid}"
+        ), f" Transaction '{txn_name}' not found in envelope {envelope_uuid}"
 
     with allure.step('Cleanup - delete created transaction'):
-        delete_transaction_by_uuid(session_cookie,credentials,transaction_data['uuid'])
+        delete_transaction_by_uuid(session_cookie,credentials,txn_data['uuid'])

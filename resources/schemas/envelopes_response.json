@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+      "Name": { "type": "string" },
+      "Uuid": { "type": "string" },
+      "itemType": { "type": ["string", "null"] },
+      "header": { "type": ["integer", "null"] },
+      "eebaMood": { "type": ["string", "null"] },
+      "count": { "type": ["integer", "null"] },
+      "nodes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "Name": { "type": "string" },
+            "totals": { "type": ["integer", "null"] },
+            "EnvelopeType": { "type": ["string", "null"] },
+            "Uuid": { "type": ["string", "null"] },
+            "Period": { "type": ["string", "null"] },
+            "PeriodExtra": { "type": ["string", "null"] },
+            "category": { "type": ["integer", "null"] },
+            "StartAmount": { "type": ["number", "string", "null"] },
+            "CurrentAmount": { "type": ["number", "string", "null"] },
+            "AnnualAmount": { "type": ["number", "string", "null"] },
+            "TotalSaved": { "type": ["number", "string", "null"] },
+            "TotalSpent": { "type": ["number", "string", "null"] },
+            "barClass": { "type": ["string", "null"] },
+            "pctPeriodRemaining": { "type": ["string", "number", "null"] },
+            "pctRemaining": { "type": ["string", "number", "null"] },
+            "amtAheadBehind": { "type": ["string", "number", "null"] },
+            "daysToWait": { "type": ["integer", "null"] },
+            "eebaMood": { "type": ["string", "null"] },
+            "eebaMessage": { "type": ["string", "array", "null"] },
+            "nodes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "Id": { "type": ["integer", "null"] },
+                  "Uuid": { "type": ["string", "null"] },
+                  "HouseholdId": { "type": ["integer", "null"] },
+                  "Name": { "type": "string" },
+                  "EnvelopeType": { "type": ["string", "null"] },
+                  "AnnualAmount": { "type": ["number", "string", "null"] },
+                  "StartAmount": { "type": ["number", "string", "null"] },
+                  "CurrentAmount": { "type": ["number", "string", "null"] },
+                  "Weight": { "type": ["integer", "null"] },
+                  "Visible": { "type": ["integer", "boolean", "null"] },
+                  "Downgraded": { "type": ["boolean", "null"] },
+                  "ResetDate": { "type": ["string", "null"] },
+                  "Period": { "type": ["string", "null"] },
+                  "PeriodExtra": { "type": ["string", "null"] },
+                  "MessageStatus": { "type": ["integer", "null"] },
+                  "Amount": { "type": ["number", "string", "null"] },
+                  "TotalSaved": { "type": ["number", "string", "null"] },
+                  "TotalSpent": { "type": ["number", "string", "null"] },
+                  "FullName": { "type": ["string", "null"] },
+                  "NextDueDate": { "type": ["string", "null"] },
+                  "barClass": { "type": ["string", "null"] },
+                  "pctPeriodRemaining": { "type": ["string", "number", "null"] },
+                  "pctRemaining": { "type": ["string", "number", "null"] },
+                  "amtAheadBehind": { "type": ["string", "number", "null"] },
+                  "daysToWait": { "type": ["integer", "null"] },
+                  "eebaMood": { "type": ["string", "null"] },
+                  "eebaMessage": { "type": ["string", "array", "null"] }
+                },
+                "required": ["Name"]
+              }
+            }
+          },
+          "required": ["Name"]
+        }
+      }
+    },
+    "required": ["Name", "nodes"]
+  }
+}
+
+
