@@ -1,4 +1,4 @@
-import pytest
+import pytest, allure
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
@@ -6,10 +6,30 @@ from dotenv import load_dotenv
 import os
 from selene import browser
 from utils import attach
+from appium import webdriver
 import requests
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.home_page import HomePage
 from goodbudget.ui.pages.logout_page import LogoutPage
+from appium import webdriver
+from appium.options.android import UiAutomator2Options
+import pytest
+import sys
+from appium import webdriver
+from appium.options.android import UiAutomator2Options
+from config import get_local_config, get_bs_config
+
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--local",
+        action="store_true",
+        default=False,
+        help="Run mobile tests locally instead of BrowserStack",
+    )
+
+
 
 @pytest.fixture(scope="session", autouse=True)
 def load_env():
@@ -119,5 +139,59 @@ def setup_browser():
     browser.config.timeout = 5
     browser.config.window_width = 1920
     browser.config.window_height = 1080
-
     yield
+
+
+
+@pytest.fixture(scope="session")
+def mobile_driver(request):
+
+    is_local = request.config.getoption("--local")
+
+    if is_local:
+        cfg = get_local_config()
+
+        caps = {
+            "platformName": "Android",
+            "appium:automationName": "UiAutomator2",
+            "appium:deviceName": cfg.device_name,
+            "appium:app": cfg.app_path,
+            "appium:appWaitActivity": "*",
+            "appium:appWaitForLaunch": False,
+            "appium:autoGrantPermissions": True,
+        }
+        options = UiAutomator2Options().load_capabilities(caps)
+        driver = webdriver.Remote(cfg.appium_url, options=options)
+        yield driver
+        driver.quit()
+
+    else:
+        bs = get_bs_config()
+        caps = {
+            "platformName": "Android",
+            "appium:automationName": "UiAutomator2",
+            "appium:deviceName": bs.device_name,
+            "appium:platformVersion": bs.platform_version,
+            "appium:app": bs.app_id,
+            "bstack:options": {
+                "projectName": "Goodbudget AutoTests",
+                "buildName": "Mobile BS Run",
+                "sessionName": "Smoke test",
+            },
+        }
+        options = UiAutomator2Options().load_capabilities(caps)
+        driver = webdriver.Remote(
+            f"https://{bs.user}:{bs.key}@hub.browserstack.com/wd/hub",
+            options=options,
+        )
+        yield driver
+        try:
+            driver.execute_script(
+                'browserstack_executor: {"action": "setSessionStatus", '
+                '"arguments": {"status":"passed","reason":"pytest finished"}}'
+            )
+        except Exception:
+            pass
+        driver.quit()
+
+

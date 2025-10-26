@@ -4,9 +4,12 @@ allure-pytest
 python-dotenv
 
 allure-python-commons~=2.15.0
-selenium==4.15.1
+selenium==4.26.1
 
 webdriver-manager
 
 requests
 jsonschema
+
+Appium-Python-Client>=5.1.1
+pydantic>=2.5
