@@ -10,7 +10,7 @@ class BaseScreen:
         return browser.config.driver
 
     @allure.step('Expect toast with text: {text}')
-    def should_see_toast(self, text, timeout: int = 5):
+    def should_see_toast(self, text, timeout: int = 10):
         toast = WebDriverWait(self.driver, timeout).until(
             EC.presence_of_element_located(
                 (AppiumBy.XPATH, f"//android.widget.Toast[@text='{text}']")

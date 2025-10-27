@@ -5,19 +5,21 @@ from appium.webdriver.common.appiumby import AppiumBy
 class OnboardingScreen:
 
 
-    LOGIN_ENTRY = (AppiumBy.ID, "com.dayspringtech.envelopes:id/login")
-    FIELD_NAME = (AppiumBy.ID, "com.dayspringtech.envelopes:id/login_household_name")
-    FIELD_PASSWORD = (AppiumBy.ID, "com.dayspringtech.envelopes:id/login_password")
-    BUTTON_SUBMIT = (AppiumBy.ID, "com.dayspringtech.envelopes:id/login_button")
-    CREATE_NEW_HH = (AppiumBy.ID, "com.dayspringtech.envelopes:id/register")
+    SETUP_BUDGET = (AppiumBy.ID, "com.dayspringtech.envelopes:id/setup_budget_save_button")
+    CONF_BUTTON = (AppiumBy.ID, "android:id/button1")
+    LATER_BUTTON = (AppiumBy.ID, "com.dayspringtech.envelopes:id/later")
 
+    @allure.step('Setup default budget')
+    def setup_budget_next(self):
+        browser.element(self.SETUP_BUDGET).click()
+        return self
 
-    browser.element('//android.widget.Button[@resource-id="com.dayspringtech.envelopes:id/setup_budget_save_button"]').click()
-    browser.element('//android.widget.Button[@resource-id="android:id/button1"]').click()
-    browser.element('//android.widget.Button[@resource-id="com.dayspringtech.envelopes:id/later"]').click()
-    browser.element('//android.widget.Button[@resource-id="android:id/button1"]').click()
+    @allure.step('Confirm modal popup')
+    def confirm_modal(self):
+        browser.element(self.CONF_BUTTON).click()
+        return self
 
-
-
-    def some(self):
-        pass
+    @allure.step('Setup default budget later')
+    def setup_budget_later(self):
+        browser.element(self.LATER_BUTTON).click()
+        return self

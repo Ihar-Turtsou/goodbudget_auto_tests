@@ -1,12 +1,10 @@
-import pytest, allure
-from selenium import webdriver
+import pytest, allure, base64
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
 from dotenv import load_dotenv
 import os
 from selene import browser
 from utils import attach
-from appium import webdriver
 import requests
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.home_page import HomePage
@@ -15,13 +13,21 @@ from goodbudget.mobile.screens.base_screen import BaseScreen
 from goodbudget.mobile.screens.login_screen import LoginScreen
 from goodbudget.mobile.screens.home_screen import HomeScreen
 from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
-from appium import webdriver
+
 from appium.options.android import UiAutomator2Options
 import pytest
 import sys
-from appium import webdriver
+
+# from appium import webdriver
+from appium import webdriver as appium_webdriver
+from selenium import webdriver
+# import selenium.webdriver as se_webdriver
 from appium.options.android import UiAutomator2Options
 from config import get_local_config, get_bs_config
+
+import base64
+import allure
+from allure_commons.types import AttachmentType
 
 
 
@@ -158,6 +164,7 @@ def setup_browser():
     browser.config.timeout = 5
     browser.config.window_width = 1920
     browser.config.window_height = 1080
+
     yield
 
 
@@ -178,12 +185,26 @@ def mobile_driver(request):
             "appium:appWaitActivity": "*",
             "appium:appWaitForLaunch": False,
             "appium:autoGrantPermissions": True,
-            "appium:fullReset": False,
+            "appium:fullReset": True,
             "appium:noReset": False,
         }
         options = UiAutomator2Options().load_capabilities(caps)
-        driver = webdriver.Remote(cfg.appium_url, options=options)
+        driver = appium_webdriver.Remote(cfg.appium_url, options=options)
+
+        try:
+            driver.start_recording_screen(
+                options={
+                    "videoSize": "320x640",
+                    "bitRate": "25000",
+                }
+            )
+        except Exception:
+            pass
+
         yield driver
+
+        attach.attach_local_mob_vid(driver)
+
         driver.quit()
 
     else:
@@ -194,7 +215,7 @@ def mobile_driver(request):
             "appium:deviceName": bs.device_name,
             "appium:platformVersion": bs.platform_version,
             "appium:app": bs.app_id,
-            "appium:fullReset": False,
+            "appium:fullReset": True,
             "appium:noReset": False,
             "bstack:options": {
                 "projectName": "Goodbudget AutoTests",
@@ -203,7 +224,7 @@ def mobile_driver(request):
             },
         }
         options = UiAutomator2Options().load_capabilities(caps)
-        driver = webdriver.Remote(
+        driver = appium_webdriver.Remote(
             f"https://{bs.user}:{bs.key}@hub.browserstack.com/wd/hub",
             options=options,
         )
@@ -215,22 +236,8 @@ def mobile_driver(request):
             )
         except Exception:
             pass
+        session_id = browser.driver.session_id
+        attach.attach_bs_video(session_id)
         driver.quit()
 
 
-@pytest.fixture(scope="session", autouse=True)
-def reset_before_run():
-    package = "com.dayspringtech.envelopes"
-    check = os.popen(f"adb shell pm list packages | grep {package}").read()
-    if package in check:
-        os.system(f"adb uninstall {package}")
-    else:
-        print(f"The {package} application is not installed.")
-
-@pytest.fixture(scope="session", autouse=True)
-def uninstall_app_after_all_tests():
-    yield
-    try:
-        os.system("adb uninstall com.dayspringtech.envelopes")
-    except Exception as e:
-        print(f"Failed to uninstall app: {e}")
