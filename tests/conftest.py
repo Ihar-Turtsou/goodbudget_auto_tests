@@ -11,6 +11,10 @@ import requests
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.home_page import HomePage
 from goodbudget.ui.pages.logout_page import LogoutPage
+from goodbudget.mobile.screens.base_screen import BaseScreen
+from goodbudget.mobile.screens.login_screen import LoginScreen
+from goodbudget.mobile.screens.home_screen import HomeScreen
+from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 import pytest
@@ -130,6 +134,21 @@ def logout_page():
 def home_page():
     return HomePage()
 
+@pytest.fixture()
+def login_screen():
+    return LoginScreen()
+
+@pytest.fixture()
+def base_screen():
+    return BaseScreen()
+
+@pytest.fixture()
+def home_screen():
+    return HomeScreen()
+
+@pytest.fixture()
+def onboarding_screen():
+    return OnboardingScreen()
 
 
 @pytest.fixture(autouse=True)
@@ -143,7 +162,7 @@ def setup_browser():
 
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def mobile_driver(request):
 
     is_local = request.config.getoption("--local")
@@ -159,6 +178,8 @@ def mobile_driver(request):
             "appium:appWaitActivity": "*",
             "appium:appWaitForLaunch": False,
             "appium:autoGrantPermissions": True,
+            "appium:fullReset": False,
+            "appium:noReset": False,
         }
         options = UiAutomator2Options().load_capabilities(caps)
         driver = webdriver.Remote(cfg.appium_url, options=options)
@@ -173,6 +194,8 @@ def mobile_driver(request):
             "appium:deviceName": bs.device_name,
             "appium:platformVersion": bs.platform_version,
             "appium:app": bs.app_id,
+            "appium:fullReset": False,
+            "appium:noReset": False,
             "bstack:options": {
                 "projectName": "Goodbudget AutoTests",
                 "buildName": "Mobile BS Run",
@@ -195,3 +218,19 @@ def mobile_driver(request):
         driver.quit()
 
 
+@pytest.fixture(scope="session", autouse=True)
+def reset_before_run():
+    package = "com.dayspringtech.envelopes"
+    check = os.popen(f"adb shell pm list packages | grep {package}").read()
+    if package in check:
+        os.system(f"adb uninstall {package}")
+    else:
+        print(f"The {package} application is not installed.")
+
+@pytest.fixture(scope="session", autouse=True)
+def uninstall_app_after_all_tests():
+    yield
+    try:
+        os.system("adb uninstall com.dayspringtech.envelopes")
+    except Exception as e:
+        print(f"Failed to uninstall app: {e}")
