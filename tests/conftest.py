@@ -1,4 +1,4 @@
-import pytest, os, requests
+import pytest, os
 from dotenv import load_dotenv
 
 from selenium.webdriver.chrome.options import Options
@@ -10,7 +10,6 @@ from selenium import webdriver
 from appium import webdriver as appium_webdriver
 from appium.options.android import UiAutomator2Options
 
-from utils import attach
 from config import get_local_config, get_bs_config
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.home_page import HomePage
@@ -19,8 +18,14 @@ from goodbudget.mobile.screens.base_screen import BaseScreen
 from goodbudget.mobile.screens.login_screen import LoginScreen
 from goodbudget.mobile.screens.home_screen import HomeScreen
 from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
-
 from goodbudget.api.client import GBApiClient
+from utils.attach import (
+    attach_bs_video,
+    attach_local_mob_vid,
+    add_video,
+    add_html,
+    add_logs,
+    add_screenshot)
 
 
 
@@ -135,10 +140,10 @@ def setup_browser(request):
         browser.config.driver = driver
 
     yield browser
-    attach.add_logs(browser)
-    attach.add_html(browser)
-    attach.add_screenshot(browser)
-    attach.add_video(browser)
+    add_logs(browser)
+    add_html(browser)
+    add_screenshot(browser)
+    add_video(browser)
     try:
         browser.quit()
     except (InvalidSessionIdException, WebDriverException):
@@ -179,7 +184,7 @@ def mobile_driver(request):
 
         yield driver
 
-        attach.attach_local_mob_vid(driver)
+        attach_local_mob_vid(driver)
 
         driver.quit()
 
@@ -213,7 +218,7 @@ def mobile_driver(request):
         except Exception:
             pass
         session_id = driver.session_id
-        attach.attach_bs_video(session_id)
+        attach_bs_video(session_id)
         driver.quit()
 
 
