@@ -1,4 +1,4 @@
-from selene import have, browser, query
+from selene import have, browser, query, be
 import allure
 
 class HomePage:
@@ -58,13 +58,13 @@ class HomePage:
 
     @allure.step("Fill transaction name: '{transaction_name}'")
     def fill_transaction_name(self, transaction_name):
-        browser.element('[id="expense-receiver"]').click().set_value(transaction_name)
+        browser.element('[id="expense-receiver"]').should(be.visible).click().type(transaction_name)
         return self
 
 
     @allure.step("Fill transaction amount: '{transaction_amount}'")
     def fill_transaction_amount(self, transaction_amount):
-        browser.element('[id = "expense-amount"]').click().set_value(transaction_amount)
+        browser.element('[id = "expense-amount"]').should(be.visible).click().type(transaction_amount)
         return self
 
 
