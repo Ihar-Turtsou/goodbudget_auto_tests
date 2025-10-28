@@ -2,6 +2,7 @@ import pytest, allure
 
 @pytest.mark.ui
 @pytest.mark.regression
+@allure.label("layer", "UI Tests")
 @allure.tag("web", "auth")
 @allure.feature("[WEB] Authentication")
 class TestAuthUi:

@@ -8,6 +8,7 @@ from utils.api_helpers import (
 
 @pytest.mark.ui
 @pytest.mark.regression
+@allure.label("layer", "UI Tests")
 @allure.tag("web", "search")
 @allure.feature("[WEB] Transactions")
 @allure.story("Search transaction on Home (UI)")

@@ -11,6 +11,7 @@ from utils.logger_console import log_response
 
 @pytest.mark.api
 @pytest.mark.regression
+@allure.label("layer", "API Tests")
 @allure.tag("api", "transactions")
 @allure.feature("[API] Transactions API")
 @allure.story("Add new transaction via API")

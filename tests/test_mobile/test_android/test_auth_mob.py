@@ -3,6 +3,7 @@ from selene import browser
 
 @pytest.mark.mobile
 @pytest.mark.regression
+@allure.label("layer", "MOBILE ANDR")
 @allure.tag("mobile", "auth")
 @allure.feature("[ANDROID] Authentication")
 class TestAuthMobile:

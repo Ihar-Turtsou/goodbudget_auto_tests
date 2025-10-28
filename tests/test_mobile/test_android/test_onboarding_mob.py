@@ -3,6 +3,7 @@ from selene import browser
 
 @pytest.mark.mobile
 @pytest.mark.regression
+@allure.label("layer", "MOBILE ANDR")
 @allure.tag("mobile", "onboarding")
 @allure.feature("[ANDROID] Onboarding")
 @allure.story("Create new unregistered account and complete onboarding")

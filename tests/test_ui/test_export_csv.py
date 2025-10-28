@@ -13,6 +13,7 @@ from utils.file_helpers import (
 @pytest.mark.ui
 @pytest.mark.smoke
 @pytest.mark.regression
+@allure.label("layer", "UI Tests")
 @allure.tag("web", "export")
 @allure.feature("[WEB] Export CSV")
 @allure.story("Export transactions to CSV")

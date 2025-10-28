@@ -11,6 +11,7 @@ from utils.logger_console import log_response
 
 @pytest.mark.api
 @pytest.mark.regression
+@allure.label("layer", "API Tests")
 @allure.tag("api", "transactions")
 @allure.feature("[API] Transactions API")
 @allure.story("Get transaction by UUID via API")
@@ -41,6 +42,7 @@ def test_get_txn_api(setup_browser, session_cookie, credentials):
 
 @pytest.mark.api
 @pytest.mark.regression
+@allure.label("layer", "API Tests")
 @allure.tag("api", "transactions")
 @allure.feature("[API] Transactions API")
 @allure.story("List transactions by envelope")
@@ -72,6 +74,7 @@ def test_get_txns_by_envelope_api(setup_browser, session_cookie, credentials):
 
 @pytest.mark.api
 @pytest.mark.regression
+@allure.label("layer", "API Tests")
 @allure.tag("api", "envelopes")
 @allure.feature("[API] Envelopes API")
 @allure.story("Get all envelopes")
