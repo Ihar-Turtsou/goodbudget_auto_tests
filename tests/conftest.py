@@ -1,11 +1,17 @@
-import pytest, allure, base64
+import pytest, os, requests
+from dotenv import load_dotenv
+
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
-from dotenv import load_dotenv
-import os
+
 from selene import browser
+from selenium import webdriver
+
+from appium import webdriver as appium_webdriver
+from appium.options.android import UiAutomator2Options
+
 from utils import attach
-import requests
+from config import get_local_config, get_bs_config
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.home_page import HomePage
 from goodbudget.ui.pages.logout_page import LogoutPage
@@ -13,21 +19,6 @@ from goodbudget.mobile.screens.base_screen import BaseScreen
 from goodbudget.mobile.screens.login_screen import LoginScreen
 from goodbudget.mobile.screens.home_screen import HomeScreen
 from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
-
-from appium.options.android import UiAutomator2Options
-import pytest
-import sys
-
-# from appium import webdriver
-from appium import webdriver as appium_webdriver
-from selenium import webdriver
-# import selenium.webdriver as se_webdriver
-from appium.options.android import UiAutomator2Options
-from config import get_local_config, get_bs_config
-
-import base64
-import allure
-from allure_commons.types import AttachmentType
 
 
 
@@ -38,7 +29,6 @@ def pytest_addoption(parser):
         default=False,
         help="Run mobile tests locally instead of BrowserStack",
     )
-
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -55,7 +45,6 @@ def credentials():
         "household_id":os.getenv("HOUSEHOLD_ID"),
         "account_uuid": os.getenv("ACCOUNT_UUID")
     }
-
 
 
 @pytest.fixture(scope="session")
@@ -92,42 +81,6 @@ def temp_cookie(credentials):
     return cookie
 
 
-# @pytest.fixture(scope="function")
-# def remote_browser_setup(request):
-#
-#     selenoid_login = os.getenv("SELENOID_LOGIN")
-#     selenoid_pass = os.getenv("SELENOID_PASS")
-#     selenoid_url = os.getenv("SELENOID_URL")
-#
-#     options = Options()
-#     options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
-#     selenoid_capabilities = {
-#         "browserName": "chrome",
-#         "browserVersion": "128.0",
-#         "selenoid:options": {
-#             "enableVNC": True,
-#             "enableVideo": True
-#         }
-#     }
-#
-#     options.capabilities.update(selenoid_capabilities)
-#     driver = webdriver.Remote(
-#         command_executor=f"https://{selenoid_login}:{selenoid_pass}@{selenoid_url}/wd/hub",
-#         options=options)
-#
-#     browser.config.driver = driver
-#     yield browser
-#     attach.add_logs(browser)
-#     attach.add_html(browser)
-#     attach.add_screenshot(browser)
-#     attach.add_video(browser)
-#
-#     try:
-#         browser.quit()
-#     except (InvalidSessionIdException, WebDriverException):
-#         pass
-
-
 @pytest.fixture()
 def login_page():
     return LoginPage()
@@ -157,16 +110,49 @@ def onboarding_screen():
     return OnboardingScreen()
 
 
-@pytest.fixture(autouse=True)
-def setup_browser():
+@pytest.fixture(scope="function")
+def setup_browser(request):
 
-    browser.config.base_url = 'https://goodbudget.com'
+    browser.config.base_url = os.getenv("GB_BASE_URL")
     browser.config.timeout = 5
     browser.config.window_width = 1920
     browser.config.window_height = 1080
 
-    yield
+    is_local = request.config.getoption("--local")
+    if is_local:
+        print('LOCAL mode: using default local browser settings')
+    else:
+        selenoid_login = os.getenv("SELENOID_LOGIN")
+        selenoid_pass = os.getenv("SELENOID_PASS")
+        selenoid_url = os.getenv("SELENOID_URL")
 
+        options = Options()
+        options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+        selenoid_capabilities = {
+            "browserName": "chrome",
+            "browserVersion": "128.0",
+            "selenoid:options": {
+                "enableVNC": True,
+                "enableVideo": True
+            }
+        }
+
+        options.capabilities.update(selenoid_capabilities)
+        driver = webdriver.Remote(
+            command_executor=f"https://{selenoid_login}:{selenoid_pass}@{selenoid_url}/wd/hub",
+            options=options)
+
+        browser.config.driver = driver
+
+    yield browser
+    attach.add_logs(browser)
+    attach.add_html(browser)
+    attach.add_screenshot(browser)
+    attach.add_video(browser)
+    try:
+        browser.quit()
+    except (InvalidSessionIdException, WebDriverException):
+        pass
 
 
 @pytest.fixture(scope="function")
@@ -236,7 +222,7 @@ def mobile_driver(request):
             )
         except Exception:
             pass
-        session_id = browser.driver.session_id
+        session_id = driver.session_id
         attach.attach_bs_video(session_id)
         driver.quit()
 
