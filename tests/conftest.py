@@ -20,6 +20,8 @@ from goodbudget.mobile.screens.login_screen import LoginScreen
 from goodbudget.mobile.screens.home_screen import HomeScreen
 from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
 
+from goodbudget.api.client import GBApiClient
+
 
 
 def pytest_addoption(parser):
@@ -39,7 +41,7 @@ def load_env():
 @pytest.fixture(scope="session")
 def credentials():
     return {
-        "base_url": os.getenv("GB_BASE_URL", "https://goodbudget.com"),
+        "base_url": os.getenv("GB_BASE_URL"),
         "username": os.getenv("GB_USERNAME"),
         "password": os.getenv("GB_PASSWORD"),
         "household_id":os.getenv("HOUSEHOLD_ID"),
@@ -49,35 +51,23 @@ def credentials():
 
 @pytest.fixture(scope="session")
 def session_cookie():
-    base_url = os.getenv("GB_BASE_URL", "https://goodbudget.com")
-    username = os.getenv("GB_USERNAME")
-    password = os.getenv("GB_PASSWORD")
-
-    session = requests.Session()
-    session.get(f"{base_url}/login", timeout=15)
-    response = session.post(
-        f"{base_url}/login_check",
-        data={"_username": username, "_password": password},
-        allow_redirects=False,
-        timeout=15,
+    client = GBApiClient(os.getenv("GB_BASE_URL"))
+    cookie = client.login(
+        os.getenv("GB_USERNAME"),
+        os.getenv("GB_PASSWORD")
     )
-    assert response.status_code in (302, 303), f"Login failed: {response.status_code}"
-    cookie_value = session.cookies.get("GBSESS")
-    assert cookie_value, "GBSESS cookie not set"
-    return cookie_value
+    client.close()
+    return cookie
 
 
 @pytest.fixture
 def temp_cookie(credentials):
-    session = requests.Session()
-    session.get(f'{credentials["base_url"]}/login', timeout=15)
-    request = session.post(
-        f'{credentials["base_url"]}/login_check',
-        data={"_username": credentials["username"], "_password": credentials["password"]},
-        allow_redirects=False, timeout=15
+    client = GBApiClient(os.getenv("GB_BASE_URL"))
+    cookie = client.login(
+        os.getenv("GB_USERNAME"),
+        os.getenv("GB_PASSWORD")
     )
-    cookie = session.cookies.get("GBSESS")
-    assert cookie
+    client.close()
     return cookie
 
 

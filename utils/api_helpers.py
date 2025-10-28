@@ -92,11 +92,8 @@ def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_n
 
 def get_existing_transaction_data(transaction_uuid, credentials, session_cookie):
     session = make_session(session_cookie)
-
     url = api_url(credentials, f"/api/transactions/get/{transaction_uuid}")
-
     get_response = session.get(url, timeout=15 )
-
     return get_response
 
 def delete_transaction_by_uuid(session_cookie, credentials, transaction_uuid):
