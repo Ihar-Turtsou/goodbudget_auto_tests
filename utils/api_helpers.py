@@ -57,7 +57,7 @@ def add_transactions_by_envelope_uuid(session_cookie, credentials, transaction_n
         "note": "",
         "envelope": value_envelope_uuid,
         "account": credentials["account_uuid"],
-        "amount": "100.00",
+        "amount": "100",
         "type": "DEB",
         "check_num": ""
     }
