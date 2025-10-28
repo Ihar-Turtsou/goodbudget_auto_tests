@@ -5,7 +5,7 @@
 [![Allure](https://img.shields.io/badge/report-Allure-8A2BE2.svg)](#)
 [![CI](https://img.shields.io/badge/Jenkins-ready-success.svg)](#)
 
-Automated testing project for **Goodbudget**, covering **UI**, **API**, and **Mobile(Android)** layers.  
+Automated testing project for [**Goodbudget**](goodbudget.com), covering **UI**, **API**, and **Mobile ([Android](https://play.google.com/store/apps/details?id=com.dayspringtech.envelopes&hl=en))** layers.  
 This repository is structured as a real project with smooth local and CI (Jenkins) execution, **Allure reports**, videos, and browser/emulator logs.
 
 ---
@@ -30,7 +30,7 @@ This repository is structured as a real project with smooth local and CI (Jenkin
 
 - **UI tests** — Based on **Selene (Selenium 4)** + **Pytest**, with fixtures and Allure attachments (screenshots, HTML, logs, Selenoid videos).  
 - **API tests** — Lightweight client using **requests** for transaction-related endpoints.  
-- **Mobile(Android) tests** — Built on **Appium**, run locally or on **BrowserStack**, with video attachments to Allure.
+- **Mobile (Android) tests** — Built on **Appium**, run locally or on **BrowserStack**, with video attachments to Allure.
 
 ---
 
