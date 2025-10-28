@@ -20,7 +20,7 @@ This repository is structured as a real project with smooth local and CI (Jenkin
   - [UI: Local / Remote (Selenoid)](#ui-local--remote-selenoid)
   - [API](#api)
   - [Mobile: Local (Appium) / Remote (BrowserStack)](#mobile-local-appium--remote-browserstack)
-- [CI/CD (Jenkins)](#-cicd-jenkins)
+- [CI (Jenkins)](#-ci-jenkins)
 - [Reports & Attachments](#-reports--attachments)
 - [Useful Commands](#-useful-commands)
 
@@ -37,13 +37,13 @@ This repository is structured as a real project with smooth local and CI (Jenkin
 ## 🧰 Tech Stack
 
 | Category | Technologies |
-|-----------|---------------|
+|--------|---------------|
 | Language | Python 3.12+ |
 | Framework | Pytest |
 | Web UI | Selene 2 (Selenium 4) |
 | Mobile | Appium Python Client |
 | Reports | Allure (allure-pytest) |
-| CI/CD | Jenkins |
+| CI | Jenkins |
 | Cloud | Selenoid, BrowserStack |
 | Config / ENV | pydantic, python-dotenv |
 
@@ -186,16 +186,16 @@ pytest -m mobile
 
 ---
 
-## 🔄 CI/CD (Jenkins)
+## 🔄 CI (Jenkins)
 
 ### ⚙️ Run tests in Jenkins
 
 1. Log in to **Jenkins**  
 2. Select the job **`goodbudget_graduation_project_ihar-t`**  
-3. Click **Build Now**  
-4. After the run finishes, open the **Allure Report** or **Allure TestOps**  icon on the build page
+3. Click **Build Now** (1) 
+4. After the run finishes, open the **Allure Report** (2) or **Allure TestOps** (3)  icon on the build page
 
-![Jenkins_build_page](./resources/images/screenshots/jenkins_build.png)
+![Jenkins_build_page](./resources/screenshots/j.png)
 
 
 ---
@@ -218,13 +218,14 @@ Allure report includes:
 - Local / BrowserStack videos (Mobile)
 
 ### Allure Report
-![Allure Report](./resources/images/screenshots/allure_example.png)
+![Allure Report](./resources/screenshots/ar.png)
 
 ### Allure TestOps
-![Allure TestOps](./resources/images/screenshots/allure_testops.png)
+![Allure TestOps](./resources/screenshots/t_o_1.png)
+![Allure TestOps](./resources/screenshots/t_o_2.png)
 
 ### Telegram Notifications
-![Telegram report](./resources/images/screenshots/telegram_example.png)
+![Telegram report](./resources/screenshots/tg.png)
 
 
 ---
