@@ -9,12 +9,12 @@ from utils.api_helpers import (
 @pytest.mark.ui
 @pytest.mark.regression
 @allure.tag("web", "transactions")
-@allure.feature("Transactions")
+@allure.feature("[WEB] Manage transactions")
 @allure.link("https://goodbudget.com/home", name="Home")
 class TestTransactionUi:
 
     @pytest.mark.smoke
-    @allure.story("Add transaction (UI+API verify)")
+    @allure.story("Add transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_add_transaction_ui(self,
             setup_browser,
@@ -61,7 +61,7 @@ class TestTransactionUi:
         )
 
 
-    @allure.story("Edit transaction (UI+API verify)")
+    @allure.story("Edit transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_edit_transaction_ui(self,
             setup_browser,
@@ -117,7 +117,7 @@ class TestTransactionUi:
 
 
 
-    @allure.story("Delete transaction (UI+API verify)")
+    @allure.story("Delete transaction from Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_delete_transaction_ui(self,
             setup_browser,

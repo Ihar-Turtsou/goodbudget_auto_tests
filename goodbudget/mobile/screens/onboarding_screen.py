@@ -1,5 +1,5 @@
 import allure
-from selene import browser, have, be
+from selene import browser
 from appium.webdriver.common.appiumby import AppiumBy
 
 class OnboardingScreen:

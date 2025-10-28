@@ -3,11 +3,11 @@ import pytest, allure
 @pytest.mark.ui
 @pytest.mark.regression
 @allure.tag("web", "auth")
-@allure.feature("Authentication")
+@allure.feature("[WEB] Authentication")
 class TestAuthUi:
 
     @pytest.mark.smoke
-    @allure.story("Login via UI")
+    @allure.story("Login via UI on Web")
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.link("https://goodbudget.com/login", name="Login page")
     def test_login_ui(self,
@@ -27,7 +27,7 @@ class TestAuthUi:
         home_page.user_greeting_should_be(credentials["username"])
 
 
-    @allure.story("Logout via UI")
+    @allure.story("Logout via UI on Web")
     @allure.severity(allure.severity_level.NORMAL)
     @allure.link("https://goodbudget.com/home", name="Home")
     def test_logout_ui(self,

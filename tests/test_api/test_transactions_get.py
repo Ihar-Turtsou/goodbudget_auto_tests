@@ -6,13 +6,13 @@ from utils.api_helpers import (
     delete_transaction_by_uuid,get_transactions_by_envelope_uuid,get_all_envelopes
 )
 from utils.schema import validate_schema
-from utils.logger_allure import  attach_response, attach_request
+from utils.logger_allure import  attach_response
 from utils.logger_console import log_response
 
 @pytest.mark.api
 @pytest.mark.regression
 @allure.tag("api", "transactions")
-@allure.feature("Transactions API")
+@allure.feature("[API] Transactions API")
 @allure.story("Get transaction by UUID via API")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/transactions/get/uuid", name="GET /api/transactions/get/uuid")
@@ -42,7 +42,7 @@ def test_get_txn_api(setup_browser, session_cookie, credentials):
 @pytest.mark.api
 @pytest.mark.regression
 @allure.tag("api", "transactions")
-@allure.feature("Transactions API")
+@allure.feature("[API] Transactions API")
 @allure.story("List transactions by envelope")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/transactions", name="GET /api/transactions")
@@ -73,7 +73,7 @@ def test_get_txns_by_envelope_api(setup_browser, session_cookie, credentials):
 @pytest.mark.api
 @pytest.mark.regression
 @allure.tag("api", "envelopes")
-@allure.feature("Envelopes API")
+@allure.feature("[API] Envelopes API")
 @allure.story("Get all envelopes")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/envelopes", name="GET /api/envelopes")

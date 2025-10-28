@@ -9,8 +9,8 @@ from utils.api_helpers import (
 @pytest.mark.ui
 @pytest.mark.regression
 @allure.tag("web", "search")
-@allure.feature("Transactions")
-@allure.story("Search transactions (UI)")
+@allure.feature("[WEB] Transactions")
+@allure.story("Search transaction on Home (UI)")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/home", name="Home")
 def test_transaction_searching_ui(

@@ -4,7 +4,7 @@ from selene import browser
 @pytest.mark.mobile
 @pytest.mark.regression
 @allure.tag("mobile", "onboarding")
-@allure.feature("Onboarding")
+@allure.feature("[ANDROID] Onboarding")
 @allure.story("Create new unregistered account and complete onboarding")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/signup", name="Create account screen")

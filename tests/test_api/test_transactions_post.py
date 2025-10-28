@@ -1,4 +1,4 @@
-import pytest, random, allure, json
+import pytest, random, allure
 from utils.api_helpers import (
     get_envelope_uuid,
     get_transactions_by_envelope_uuid,
@@ -12,7 +12,7 @@ from utils.logger_console import log_response
 @pytest.mark.api
 @pytest.mark.regression
 @allure.tag("api", "transactions")
-@allure.feature("Transactions API")
+@allure.feature("[API] Transactions API")
 @allure.story("Add new transaction via API")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.link("https://goodbudget.com/api/transactions/save", name="POST /api/transactions/save")

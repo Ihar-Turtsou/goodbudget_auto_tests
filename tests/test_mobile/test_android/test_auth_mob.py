@@ -4,7 +4,7 @@ from selene import browser
 @pytest.mark.mobile
 @pytest.mark.regression
 @allure.tag("mobile", "auth")
-@allure.feature("Authentication")
+@allure.feature("[ANDROID] Authentication")
 class TestAuthMobile:
 
     @pytest.mark.smoke

@@ -14,7 +14,7 @@ from utils.file_helpers import (
 @pytest.mark.smoke
 @pytest.mark.regression
 @allure.tag("web", "export")
-@allure.feature("Export")
+@allure.feature("[WEB] Export CSV")
 @allure.story("Export transactions to CSV")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.link("https://goodbudget.com/home", name="Export button location")
