@@ -5,7 +5,7 @@
 [![Allure](https://img.shields.io/badge/report-Allure-8A2BE2.svg)](#)
 [![CI](https://img.shields.io/badge/Jenkins-ready-success.svg)](#)
 
-Automated testing project for [**Goodbudget**](goodbudget.com), covering **UI**, **API**, and **Mobile ([Android](https://play.google.com/store/apps/details?id=com.dayspringtech.envelopes&hl=en))** layers.  
+Automated testing project for [**Goodbudget**](https://goodbudget.com/), covering **UI**, **API**, and **Mobile ([Android](https://play.google.com/store/apps/details?id=com.dayspringtech.envelopes&hl=en))** layers.  
 This repository is structured as a real project with smooth local and CI (Jenkins) execution, **Allure reports**, videos, and browser/emulator logs.
 
 ---
