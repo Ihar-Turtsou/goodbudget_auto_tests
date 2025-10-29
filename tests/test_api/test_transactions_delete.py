@@ -17,7 +17,7 @@ from utils.logger_console import log_response
 @allure.story("Delete new transaction via API")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/transactions/save", name="POST /api/transactions/save")
-def test_delete_transaction_api(setup_browser, session_cookie, credentials):
+def test_delete_transaction_api(session_cookie, credentials):
 
     with allure.step('Prepare test data'):
         envelope_name = 'Hobby'

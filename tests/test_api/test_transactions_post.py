@@ -17,7 +17,7 @@ from utils.logger_console import log_response
 @allure.story("Add new transaction via API")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.link("https://goodbudget.com/api/transactions/save", name="POST /api/transactions/save")
-def test_add_transaction_api(setup_browser, session_cookie, credentials):
+def test_add_transaction_api(session_cookie, credentials):
 
     with allure.step('Prepare test data'):
         envelope_name = 'Hobby'

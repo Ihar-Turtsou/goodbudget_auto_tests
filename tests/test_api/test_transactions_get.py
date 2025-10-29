@@ -17,7 +17,7 @@ from utils.logger_console import log_response
 @allure.story("Get transaction by UUID via API")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/transactions/get/uuid", name="GET /api/transactions/get/uuid")
-def test_get_txn_api(setup_browser, session_cookie, credentials):
+def test_get_txn_api(session_cookie, credentials):
 
     with allure.step('Prepare test data'):
         envelope_name = 'Hobby'
@@ -48,7 +48,7 @@ def test_get_txn_api(setup_browser, session_cookie, credentials):
 @allure.story("List transactions by envelope")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/transactions", name="GET /api/transactions")
-def test_get_txns_by_envelope_api(setup_browser, session_cookie, credentials):
+def test_get_txns_by_envelope_api(session_cookie, credentials):
 
     with allure.step('Prepare test data'):
         envelope_name = 'Hobby'
@@ -80,7 +80,7 @@ def test_get_txns_by_envelope_api(setup_browser, session_cookie, credentials):
 @allure.story("Get all envelopes")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/api/envelopes", name="GET /api/envelopes")
-def test_get_all_envelopes_api(setup_browser, session_cookie, credentials):
+def test_get_all_envelopes_api(session_cookie, credentials):
 
     with allure.step('Prepare test data'):
         envelope_name = 'Hobby'
