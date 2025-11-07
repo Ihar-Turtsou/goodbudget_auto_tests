@@ -15,9 +15,9 @@ from selene import browser
     "Checks the creation of an unregistered (guest) account and the completion of onboarding."
 )
 def test_create_unregistered_account(
-    mobile_driver, login_screen, onboarding_screen, home_screen
+    mobile_browser, login_screen, onboarding_screen, home_screen
 ):
-    browser.config.driver = mobile_driver
+
     login_screen.create_new_account()
     (
         onboarding_screen.setup_budget_next()

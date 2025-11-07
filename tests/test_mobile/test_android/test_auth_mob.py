@@ -18,9 +18,9 @@ class TestAuthMobile:
         "Checks successful authorization of a registered user in the mobile application."
     )
     def test_login_android_success(
-        self, mobile_driver, credentials, login_screen, base_screen
+        self, mobile_browser, credentials, login_screen, base_screen
     ):
-        browser.config.driver = mobile_driver
+
         (
             login_screen.tap_login_entry()
             .type_name(credentials["username"])
@@ -35,8 +35,8 @@ class TestAuthMobile:
     @allure.description(
         "Ensures that an error message is displayed when invalid data is entered."
     )
-    def test_login_android_fail(self, mobile_driver, login_screen, base_screen):
-        browser.config.driver = mobile_driver
+    def test_login_android_fail(self, mobile_browser, login_screen, base_screen):
+
         (
             login_screen.tap_login_entry()
             .type_name("fdgdhthtere")

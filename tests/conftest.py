@@ -217,3 +217,9 @@ def mobile_driver(request):
         session_id = driver.session_id
         attach_bs_video(session_id)
         driver.quit()
+
+
+@pytest.fixture
+def mobile_browser(mobile_driver):
+    browser.config.driver = mobile_driver
+    yield browser
