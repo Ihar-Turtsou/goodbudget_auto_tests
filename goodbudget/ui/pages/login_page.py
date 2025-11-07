@@ -1,11 +1,12 @@
-from selene import browser
 import allure
+from selene import browser
+
 
 class LoginPage:
 
     @allure.step("Open login page")
     def open(self):
-        browser.open('/login')
+        browser.open("/login")
         return self
 
     @allure.step("Enter username: '{username}'")

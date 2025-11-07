@@ -1,6 +1,6 @@
 import json
-import allure
 
+import allure
 
 
 def attach_request(request_data):
@@ -15,14 +15,13 @@ def attach_request(request_data):
         "url": url,
         "headers": headers,
         "cookies": cookies,
-        "body": body
+        "body": body,
     }
     allure.attach(
         json.dumps(data, indent=2, ensure_ascii=False),
         name="API Request",
-        attachment_type=allure.attachment_type.JSON
+        attachment_type=allure.attachment_type.JSON,
     )
-
 
 
 def attach_response(response):
@@ -31,13 +30,9 @@ def attach_response(response):
     except Exception:
         content = response.text
 
-    data = {
-        "status_code": response.status_code,
-        "url": response.url,
-        "body": content
-    }
+    data = {"status_code": response.status_code, "url": response.url, "body": content}
     allure.attach(
         json.dumps(data, indent=2, ensure_ascii=False),
         name="API Response",
-        attachment_type=allure.attachment_type.JSON
+        attachment_type=allure.attachment_type.JSON,
     )

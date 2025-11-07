@@ -1,5 +1,7 @@
-import csv, requests, os
+import csv
+import os
 
+import requests
 
 CURRENT_FILE = os.path.abspath(__file__)
 CURRENT_DIR = os.path.dirname(CURRENT_FILE)
@@ -19,16 +21,15 @@ def get_download_path(filename="history.csv"):
 
 
 def download_file_from_url(url, session_cookie, path):
-    content = requests.get(url, cookies={'GBSESS': session_cookie}).content
+    content = requests.get(url, cookies={"GBSESS": session_cookie}).content
     with open(path, "wb") as file:
         file.write(content)
     return path
 
 
 def assert_csv_contains(path, transaction_name):
-    with open(path, newline='', encoding='utf-8') as csvfile:
+    with open(path, newline="", encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile)
         assert any(
-            transaction_name in row
-            for row in reader
+            transaction_name in row for row in reader
         ), f"Transaction '{transaction_name}' not found in exported CSV"

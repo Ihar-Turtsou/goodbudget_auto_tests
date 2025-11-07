@@ -1,32 +1,31 @@
-import pytest, os
-from dotenv import load_dotenv
+import os
 
-from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
-
-from selene import browser
-from selenium import webdriver
-
+import pytest
 from appium import webdriver as appium_webdriver
 from appium.options.android import UiAutomator2Options
+from dotenv import load_dotenv
+from selene import browser
+from selenium import webdriver
+from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
+from selenium.webdriver.chrome.options import Options
 
-from config import get_local_config, get_bs_config
-from goodbudget.ui.pages.login_page import LoginPage
-from goodbudget.ui.pages.home_page import HomePage
-from goodbudget.ui.pages.logout_page import LogoutPage
-from goodbudget.mobile.screens.base_screen import BaseScreen
-from goodbudget.mobile.screens.login_screen import LoginScreen
-from goodbudget.mobile.screens.home_screen import HomeScreen
-from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
+from config import get_bs_config, get_local_config
 from goodbudget.api.client import GBApiClient
+from goodbudget.mobile.screens.base_screen import BaseScreen
+from goodbudget.mobile.screens.home_screen import HomeScreen
+from goodbudget.mobile.screens.login_screen import LoginScreen
+from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
+from goodbudget.ui.pages.home_page import HomePage
+from goodbudget.ui.pages.login_page import LoginPage
+from goodbudget.ui.pages.logout_page import LogoutPage
 from utils.attach import (
-    attach_bs_video,
-    attach_local_mob_vid,
-    add_video,
     add_html,
     add_logs,
-    add_screenshot)
-
+    add_screenshot,
+    add_video,
+    attach_bs_video,
+    attach_local_mob_vid,
+)
 
 
 def pytest_addoption(parser):
@@ -49,18 +48,15 @@ def credentials():
         "base_url": os.getenv("GB_BASE_URL"),
         "username": os.getenv("GB_USERNAME"),
         "password": os.getenv("GB_PASSWORD"),
-        "household_id":os.getenv("HOUSEHOLD_ID"),
-        "account_uuid": os.getenv("ACCOUNT_UUID")
+        "household_id": os.getenv("HOUSEHOLD_ID"),
+        "account_uuid": os.getenv("ACCOUNT_UUID"),
     }
 
 
 @pytest.fixture(scope="session")
 def session_cookie():
     client = GBApiClient(os.getenv("GB_BASE_URL"))
-    cookie = client.login(
-        os.getenv("GB_USERNAME"),
-        os.getenv("GB_PASSWORD")
-    )
+    cookie = client.login(os.getenv("GB_USERNAME"), os.getenv("GB_PASSWORD"))
     client.close()
     return cookie
 
@@ -68,10 +64,7 @@ def session_cookie():
 @pytest.fixture
 def temp_cookie(credentials):
     client = GBApiClient(os.getenv("GB_BASE_URL"))
-    cookie = client.login(
-        os.getenv("GB_USERNAME"),
-        os.getenv("GB_PASSWORD")
-    )
+    cookie = client.login(os.getenv("GB_USERNAME"), os.getenv("GB_PASSWORD"))
     client.close()
     return cookie
 
@@ -80,25 +73,31 @@ def temp_cookie(credentials):
 def login_page():
     return LoginPage()
 
+
 @pytest.fixture()
 def logout_page():
     return LogoutPage()
+
 
 @pytest.fixture()
 def home_page():
     return HomePage()
 
+
 @pytest.fixture()
 def login_screen():
     return LoginScreen()
+
 
 @pytest.fixture()
 def base_screen():
     return BaseScreen()
 
+
 @pytest.fixture()
 def home_screen():
     return HomeScreen()
+
 
 @pytest.fixture()
 def onboarding_screen():
@@ -115,7 +114,7 @@ def setup_browser(request):
 
     is_local = request.config.getoption("--local")
     if is_local:
-        print('LOCAL mode: using default local browser settings')
+        print("LOCAL mode: using default local browser settings")
     else:
         selenoid_login = os.getenv("SELENOID_LOGIN")
         selenoid_pass = os.getenv("SELENOID_PASS")
@@ -126,16 +125,14 @@ def setup_browser(request):
         selenoid_capabilities = {
             "browserName": "chrome",
             "browserVersion": "128.0",
-            "selenoid:options": {
-                "enableVNC": True,
-                "enableVideo": True
-            }
+            "selenoid:options": {"enableVNC": True, "enableVideo": True},
         }
 
         options.capabilities.update(selenoid_capabilities)
         driver = webdriver.Remote(
             command_executor=f"https://{selenoid_login}:{selenoid_pass}@{selenoid_url}/wd/hub",
-            options=options)
+            options=options,
+        )
 
         browser.config.driver = driver
 
@@ -220,5 +217,3 @@ def mobile_driver(request):
         session_id = driver.session_id
         attach_bs_video(session_id)
         driver.quit()
-
-

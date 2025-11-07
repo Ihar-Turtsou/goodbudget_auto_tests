@@ -1,7 +1,12 @@
-import json, os, base64
-from jsonschema import validate, ValidationError
+import base64
+import json
+import os
 
-SCHEMAS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "resources", "schemas")
+from jsonschema import ValidationError, validate
+
+SCHEMAS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "resources", "schemas"
+)
 
 
 def validate_schema(data: dict, schema_file: str):
@@ -11,7 +16,10 @@ def validate_schema(data: dict, schema_file: str):
     try:
         validate(instance=data, schema=schema)
     except ValidationError as error:
-        raise AssertionError(f"Schema validation failed for {schema_file}: {error.message}") from error
+        raise AssertionError(
+            f"Schema validation failed for {schema_file}: {error.message}"
+        ) from error
+
 
 def validate_transaction_save_request(form_dict: dict):
     validate_schema(form_dict, "transaction_save_request_form.json")
