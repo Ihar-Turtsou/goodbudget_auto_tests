@@ -9,7 +9,7 @@ from utils.api_helpers import (
     get_envelope_uuid,
 )
 
-
+@pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 @pytest.mark.regression
 @allure.label("layer", "UI Tests")

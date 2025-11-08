@@ -5,7 +5,7 @@ from selene import be, browser, have, query
 class HomePage:
 
     @allure.step("Open Home page using provided session cookie")
-    def open_home_with_cookie(self, credentials, cookie_value):
+    def open_home_with_cookie(self, cookie_value):
         browser.open("/")
         browser.driver.add_cookie(
             {
@@ -14,7 +14,7 @@ class HomePage:
                 "path": "/",
             }
         )
-        browser.open(f'{credentials["base_url"]}/home')
+        browser.open(f'/home')
         return self
 
     @allure.step("Get Export CSV link (href)")
@@ -94,6 +94,6 @@ class HomePage:
         return self
 
     @allure.step("Delete selected transaction")
-    def delete_transaction(self):
+    def delete_transaction_ui(self):
         browser.element('[id="addTransactionDelete"]').click()
         return self

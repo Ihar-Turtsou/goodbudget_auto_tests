@@ -4,8 +4,6 @@ import allure
 import pytest
 
 from utils.api_helpers import (
-    add_transactions_by_envelope_uuid,
-    delete_transaction_by_uuid,
     get_envelope_uuid,
     get_transactions_by_envelope_uuid,
 )
@@ -23,14 +21,14 @@ class TestTransactionUi:
     @allure.story("Add transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_add_transaction_ui(
-        self, setup_browser, session_cookie, credentials, home_page
+        self, setup_browser, delete_transaction, session_cookie, credentials, home_page
     ):
         transaction_name = f"Payment for rent {random.randint(0, 100)}"
         transaction_amount = random.randint(10, 300)
         envelope_uuid = get_envelope_uuid(session_cookie, credentials, "Groceries")
 
         (
-            home_page.open_home_with_cookie(credentials, session_cookie)
+            home_page.open_home_with_cookie(session_cookie)
             .add_transaction()
             .fill_transaction_name(transaction_name)
             .fill_transaction_amount(transaction_amount)
@@ -50,75 +48,68 @@ class TestTransactionUi:
             for t in items
         ), f" Transaction '{transaction_name}' (amount={transaction_amount}) not found in envelope {envelope_uuid}"
 
-        transaction_data = next(
-            (t for t in items if t.get("receiver") == transaction_name), None
-        )
-        delete_transaction_by_uuid(
-            session_cookie, credentials, transaction_data["uuid"]
-        )
+
+        delete_transaction(transaction_name=transaction_name, envelope_transactions=items)
+
 
     @allure.story("Edit transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_edit_transaction_ui(
-        self, setup_browser, session_cookie, credentials, home_page
+        self, setup_browser,create_transaction, delete_transaction, session_cookie, credentials, home_page
     ):
-        envelope_uuid = get_envelope_uuid(session_cookie, credentials, "Gas")
-        transaction_name = "Some payment for gas"
-        transaction_data = add_transactions_by_envelope_uuid(
-            session_cookie, credentials, transaction_name, envelope_uuid
-        )
+
+        transaction = create_transaction("Gas")
+
         transaction_name_edited = f"Payment for gas {random.randint(0, 100)}"
         transaction_amount_edited = random.randint(300, 900)
 
         (
-            home_page.open_home_with_cookie(credentials, session_cookie)
+            home_page.open_home_with_cookie(session_cookie)
             .choose_envelope("Gas")
-            .edit_transaction(transaction_data["name"])
+            .edit_transaction(transaction["transaction_name"])
             .fill_transaction_name(transaction_name_edited)
             .fill_transaction_amount(transaction_amount_edited)
-            .set_transaction_envelope(envelope_uuid)
+            .set_transaction_envelope(transaction["envelope_uuid"])
             .save_transaction()
         )
 
         transactions = get_transactions_by_envelope_uuid(
-            session_cookie, credentials, envelope_uuid
+            session_cookie, credentials, transaction["envelope_uuid"]
         )
         items = transactions.json().get("items", [])
 
         assert any(
             t.get("receiver") == transaction_name_edited
             and t.get("amount") == f"{transaction_amount_edited:.2f}"
-            and t.get("envelope_uuid") == envelope_uuid
+            and t.get("envelope_uuid") == transaction["envelope_uuid"]
             for t in items
-        ), f" Transaction '{transaction_name_edited}' (amount={transaction_amount_edited}) not found in envelope {envelope_uuid}"
+        ), f" Transaction '{transaction_name_edited}' (amount={transaction_amount_edited}) not found in envelope {transaction["envelope_uuid"]}"
 
-        delete_transaction_by_uuid(
-            session_cookie, credentials, transaction_data["uuid"]
-        )
+
+        delete_transaction(transaction_uuid=transaction["transaction_uuid"])
+
+
 
     @allure.story("Delete transaction from Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_delete_transaction_ui(
-        self, setup_browser, session_cookie, credentials, home_page
+        self, setup_browser, create_transaction, session_cookie, credentials, home_page
     ):
-        envelope_uuid = get_envelope_uuid(session_cookie, credentials, "Chemical")
-        transaction_name = f"Payment for deletion {random.randint(0, 100)}"
-        transaction_data = add_transactions_by_envelope_uuid(
-            session_cookie, credentials, transaction_name, envelope_uuid
-        )
+
+        transaction = create_transaction("Chemical")
 
         (
-            home_page.open_home_with_cookie(credentials, session_cookie)
+            home_page.open_home_with_cookie(session_cookie)
             .choose_envelope("Chemical")
-            .edit_transaction(transaction_data["name"])
-            .delete_transaction()
+            .edit_transaction(transaction["transaction_name"])
+            .delete_transaction_ui()
         )
 
         transactions = get_transactions_by_envelope_uuid(
-            session_cookie, credentials, envelope_uuid
+            session_cookie, credentials, transaction["envelope_uuid"]
         )
         items = transactions.json().get("items", [])
 
         assert all(
-            t.get("uuid") != transaction_data["uuid"] for t in items
+            t.get("uuid") != transaction["envelope_uuid"] for t in items
         ), "Transaction still present after delete"

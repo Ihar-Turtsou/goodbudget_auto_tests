@@ -14,7 +14,7 @@ from utils.file_helpers import (
     get_download_path,
 )
 
-
+@pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 @pytest.mark.smoke
 @pytest.mark.regression

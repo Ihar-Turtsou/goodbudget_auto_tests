@@ -223,3 +223,49 @@ def mobile_driver(request):
 def mobile_browser(mobile_driver):
     browser.config.driver = mobile_driver
     yield browser
+
+
+
+
+from utils.api_helpers import (
+    get_envelope_uuid,
+    add_transactions_by_envelope_uuid,
+    delete_transaction_by_uuid,
+)
+import random
+
+
+@pytest.fixture
+def create_transaction(session_cookie, credentials):
+    def create(envelope_name):
+        envelope_uuid = get_envelope_uuid(session_cookie, credentials, envelope_name)
+        transaction_name = f"Test payment for {envelope_name} {random.randint(10, 10000)}"
+        transaction = add_transactions_by_envelope_uuid(
+            session_cookie, credentials, transaction_name, envelope_uuid
+        )
+        return {
+            "envelope_name": envelope_name,
+            "envelope_uuid": envelope_uuid,
+            "transaction_name": transaction["name"],
+            "transaction_uuid": transaction["uuid"],
+            "request": transaction["request"],
+            "response": transaction["response"]
+        }
+    return create
+
+
+@pytest.fixture
+def delete_transaction(session_cookie, credentials):
+
+    def delete(transaction_uuid=None, transaction_name=None, envelope_transactions=None):
+        if transaction_uuid:
+            delete_transaction_by_uuid(session_cookie, credentials, transaction_uuid)
+            return
+        else:
+            transaction_data = next(
+                (t for t in envelope_transactions if t.get("receiver") == transaction_name), None
+            )
+            delete_transaction_by_uuid(session_cookie, credentials,transaction_data['uuid'])
+
+
+    return delete
