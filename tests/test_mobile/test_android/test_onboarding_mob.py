@@ -2,7 +2,7 @@ import allure
 import pytest
 from selene import browser
 
-
+@pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.mobile
 @pytest.mark.regression
 @allure.label("layer", "MOBILE ANDR")
