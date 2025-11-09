@@ -18,6 +18,7 @@ from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
 from goodbudget.ui.pages.home_page import HomePage
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.logout_page import LogoutPage
+from tests.contexts.transactions_context import TransactionsContext
 from utils.attach import (
     add_html,
     add_logs,
@@ -68,6 +69,9 @@ def temp_cookie(credentials):
     client.close()
     return cookie
 
+@pytest.fixture
+def transactions_manager(session_cookie, credentials):
+    return TransactionsContext(session_cookie, credentials)
 
 @pytest.fixture()
 def login_page():
@@ -102,6 +106,12 @@ def home_screen():
 @pytest.fixture()
 def onboarding_screen():
     return OnboardingScreen()
+
+from goodbudget.api.api_steps import ApiSteps
+
+@pytest.fixture()
+def api_steps():
+    return ApiSteps()
 
 
 @pytest.fixture(scope="function")
@@ -226,46 +236,11 @@ def mobile_browser(mobile_driver):
 
 
 
-
-from utils.api_helpers import (
-    get_envelope_uuid,
-    add_transactions_by_envelope_uuid,
-    delete_transaction_by_uuid,
-)
-import random
-
+from tests.contexts.api_logger_context import ApiLogger
 
 @pytest.fixture
-def create_transaction(session_cookie, credentials):
-    def create(envelope_name):
-        envelope_uuid = get_envelope_uuid(session_cookie, credentials, envelope_name)
-        transaction_name = f"Test payment for {envelope_name} {random.randint(10, 10000)}"
-        transaction = add_transactions_by_envelope_uuid(
-            session_cookie, credentials, transaction_name, envelope_uuid
-        )
-        return {
-            "envelope_name": envelope_name,
-            "envelope_uuid": envelope_uuid,
-            "transaction_name": transaction["name"],
-            "transaction_uuid": transaction["uuid"],
-            "request": transaction["request"],
-            "response": transaction["response"]
-        }
-    return create
+def api_logger():
+    logger = ApiLogger()
+    yield logger
 
 
-@pytest.fixture
-def delete_transaction(session_cookie, credentials):
-
-    def delete(transaction_uuid=None, transaction_name=None, envelope_transactions=None):
-        if transaction_uuid:
-            delete_transaction_by_uuid(session_cookie, credentials, transaction_uuid)
-            return
-        else:
-            transaction_data = next(
-                (t for t in envelope_transactions if t.get("receiver") == transaction_name), None
-            )
-            delete_transaction_by_uuid(session_cookie, credentials,transaction_data['uuid'])
-
-
-    return delete

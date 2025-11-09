@@ -6,7 +6,9 @@ import uuid
 import requests
 
 from utils.schema import validate_transaction_save_request
+from utils import api_logging
 
+DEFAULT_TIMEOUT = 10
 
 def make_session(session_cookie):
     session = requests.Session()
@@ -18,11 +20,16 @@ def api_url(credentials, endpoint):
     base_url = credentials["base_url"].rstrip("/")
     return f"{base_url}{endpoint}"
 
+def assert_status_code(response, expected_status):
+    assert response.status_code == expected_status, f"Unexpected status: {response.status_code}, body: {response.text}"
+
 
 def get_all_envelopes(session_cookie, credentials):
     session = make_session(session_cookie)
     url = api_url(credentials, "/api/envelopes")
-    response = session.get(url, timeout=10)
+    response = session.get(url, timeout=DEFAULT_TIMEOUT)
+    assert_status_code(response, 200)
+    api_logging.capture(None, response)
     return response
 
 
@@ -41,15 +48,21 @@ def get_envelope_uuid(session_cookie, credentials, envelope_name):
 def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelope_uuid):
     session = make_session(session_cookie)
     url = api_url(credentials, "/api/transactions")
-    time.sleep(2)
 
     response = session.get(
         url,
         params={"count": 20, "page": 1, "envelopeUuid": value_envelope_uuid},
-        timeout=10,
+        timeout=DEFAULT_TIMEOUT,
     )
 
-    return response
+    assert_status_code(response, 200)
+    api_logging.capture(None, response)
+    items = response.json().get("items", [])
+
+    return {
+        "response":response,
+        "items":items
+    }
 
 
 def add_transactions_by_envelope_uuid(
@@ -88,9 +101,9 @@ def add_transactions_by_envelope_uuid(
         "cookies": session_cookie,
     }
 
-    response = session.post(url, data=form_data, timeout=10)
-
-    time.sleep(2)
+    response = session.post(url, data=form_data, timeout=DEFAULT_TIMEOUT)
+    assert_status_code(response, 200)
+    api_logging.capture(request, response)
 
     return {
         "name": transaction_name,
@@ -103,7 +116,9 @@ def add_transactions_by_envelope_uuid(
 def get_existing_transaction_data(transaction_uuid, credentials, session_cookie):
     session = make_session(session_cookie)
     url = api_url(credentials, f"/api/transactions/get/{transaction_uuid}")
-    get_response = session.get(url, timeout=15)
+    get_response = session.get(url, timeout=DEFAULT_TIMEOUT)
+    assert_status_code(get_response, 200)
+    api_logging.capture(None, get_response)
     return get_response
 
 
@@ -147,6 +162,9 @@ def delete_transaction_by_uuid(session_cookie, credentials, transaction_uuid):
     del_response = session.post(
         url,
         data=form_data,
-        timeout=15,
+        timeout=DEFAULT_TIMEOUT,
     )
+
+    assert_status_code(del_response, 200)
+    api_logging.capture(del_request, del_response)
     return {"del_response": del_response, "del_request": del_request}

@@ -1,19 +1,20 @@
 import allure
 import pytest
 
-@pytest.mark.skip(reason="This test is temporarily disabled.")
+# @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 @pytest.mark.regression
+@pytest.mark.usefixtures("setup_browser")
 @allure.label("layer", "UI Tests")
 @allure.tag("web", "auth")
 @allure.feature("[WEB] Authentication")
 class TestAuthUi:
-    @pytest.mark.skip(reason="This test is temporarily disabled.")
+    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @pytest.mark.smoke
     @allure.story("Login via UI on Web")
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.link("https://goodbudget.com/login", name="Login page")
-    def test_login_ui(self, setup_browser, credentials, login_page, home_page):
+    def test_login_ui(self, credentials, login_page, home_page):
 
         (
             login_page.open()
@@ -23,17 +24,14 @@ class TestAuthUi:
         )
         home_page.user_greeting_should_be(credentials["username"])
 
-    @pytest.mark.skip(reason="This test is temporarily disabled.")
+    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @allure.story("Logout via UI on Web")
     @allure.severity(allure.severity_level.NORMAL)
     @allure.link("https://goodbudget.com/home", name="Home")
-    def test_logout_ui(
-        self, setup_browser, credentials, home_page, logout_page, temp_cookie
-    ):
+    def test_logout_ui(self, credentials, home_page, logout_page, temp_cookie):
 
         (
-            home_page.open_home_with_cookie(
-                credentials, temp_cookie
+            home_page.open_home_with_cookie( temp_cookie
             ).logout_from_account()
         )
 

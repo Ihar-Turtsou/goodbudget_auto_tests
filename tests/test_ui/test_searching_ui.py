@@ -1,38 +1,26 @@
-import random
-
 import allure
 import pytest
 
-from utils.api_helpers import (
-    add_transactions_by_envelope_uuid,
-    delete_transaction_by_uuid,
-    get_envelope_uuid,
-)
 
-@pytest.mark.skip(reason="This test is temporarily disabled.")
+# @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.ui
 @pytest.mark.regression
+@pytest.mark.usefixtures("setup_browser")
 @allure.label("layer", "UI Tests")
 @allure.tag("web", "search")
 @allure.feature("[WEB] Transactions")
 @allure.story("Search transaction on Home (UI)")
 @allure.severity(allure.severity_level.NORMAL)
 @allure.link("https://goodbudget.com/home", name="Home")
-def test_transaction_searching_ui(
-    setup_browser, session_cookie, credentials, home_page
-):
+def test_transaction_searching_ui(transactions_manager, session_cookie, credentials, home_page):
 
-    transaction_name = f"Saving № {random.randint(2000, 3000)}"
-    envelope_uuid = get_envelope_uuid(session_cookie, credentials, "Savings")
-    transaction_data = add_transactions_by_envelope_uuid(
-        session_cookie, credentials, transaction_name, envelope_uuid
-    )
+    transaction = transactions_manager.create("Savings")
 
     (
-        home_page.open_home_with_cookie(credentials, session_cookie)
-        .set_search_query(transaction_name)
+        home_page.open_home_with_cookie(session_cookie)
+        .set_search_query(transaction["transaction_name"])
         .submit_search()
-        .searching_result_should_be(transaction_name)
+        .searching_result_should_be(transaction["transaction_name"])
     )
 
-    delete_transaction_by_uuid(session_cookie, credentials, transaction_data["uuid"])
+    transactions_manager.delete(transaction_uuid=transaction["transaction_uuid"])

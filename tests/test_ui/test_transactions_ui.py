@@ -11,17 +11,19 @@ from utils.api_helpers import (
 
 @pytest.mark.ui
 @pytest.mark.regression
+@pytest.mark.usefixtures("setup_browser")
 @allure.label("layer", "UI Tests")
 @allure.tag("web", "transactions")
 @allure.feature("[WEB] Manage transactions")
 @allure.link("https://goodbudget.com/home", name="Home")
-class TestTransactionUi:
 
+class TestTransactionUi:
+    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @pytest.mark.smoke
     @allure.story("Add transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_add_transaction_ui(
-        self, setup_browser, delete_transaction, session_cookie, credentials, home_page
+        self, transactions_manager, session_cookie, credentials, home_page
     ):
         transaction_name = f"Payment for rent {random.randint(0, 100)}"
         transaction_amount = random.randint(10, 300)
@@ -39,26 +41,27 @@ class TestTransactionUi:
         transactions = get_transactions_by_envelope_uuid(
             session_cookie, credentials, envelope_uuid
         )
-        items = transactions.json().get("items", [])
+
 
         assert any(
             t.get("receiver") == transaction_name
             and t.get("amount") == f"{transaction_amount:.2f}"
             and t.get("envelope_uuid") == envelope_uuid
-            for t in items
+            for t in transactions["items"]
         ), f" Transaction '{transaction_name}' (amount={transaction_amount}) not found in envelope {envelope_uuid}"
 
 
-        delete_transaction(transaction_name=transaction_name, envelope_transactions=items)
+        transactions_manager.delete(transaction_name=transaction_name, envelope_transactions=transactions["items"])
 
 
+    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @allure.story("Edit transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_edit_transaction_ui(
-        self, setup_browser,create_transaction, delete_transaction, session_cookie, credentials, home_page
+        self, transactions_manager, session_cookie, credentials, home_page
     ):
 
-        transaction = create_transaction("Gas")
+        transaction = transactions_manager.create("Gas")
 
         transaction_name_edited = f"Payment for gas {random.randint(0, 100)}"
         transaction_amount_edited = random.randint(300, 900)
@@ -76,27 +79,26 @@ class TestTransactionUi:
         transactions = get_transactions_by_envelope_uuid(
             session_cookie, credentials, transaction["envelope_uuid"]
         )
-        items = transactions.json().get("items", [])
+
 
         assert any(
             t.get("receiver") == transaction_name_edited
             and t.get("amount") == f"{transaction_amount_edited:.2f}"
             and t.get("envelope_uuid") == transaction["envelope_uuid"]
-            for t in items
+            for t in transactions["items"]
         ), f" Transaction '{transaction_name_edited}' (amount={transaction_amount_edited}) not found in envelope {transaction["envelope_uuid"]}"
 
 
-        delete_transaction(transaction_uuid=transaction["transaction_uuid"])
+        transactions_manager.delete(transaction_uuid=transaction["transaction_uuid"])
 
-
-
+    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @allure.story("Delete transaction from Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_delete_transaction_ui(
-        self, setup_browser, create_transaction, session_cookie, credentials, home_page
+        self, transactions_manager, session_cookie, credentials, home_page
     ):
 
-        transaction = create_transaction("Chemical")
+        transaction = transactions_manager.create("Chemical")
 
         (
             home_page.open_home_with_cookie(session_cookie)
@@ -108,8 +110,9 @@ class TestTransactionUi:
         transactions = get_transactions_by_envelope_uuid(
             session_cookie, credentials, transaction["envelope_uuid"]
         )
-        items = transactions.json().get("items", [])
+
+        # print(json.dumps(transactions["items"], indent=2, ensure_ascii=False))
 
         assert all(
-            t.get("uuid") != transaction["envelope_uuid"] for t in items
+            t.get("uuid") != transaction["transaction_uuid"] for t in transactions["items"]
         ), "Transaction still present after delete"

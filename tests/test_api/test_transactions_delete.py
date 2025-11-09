@@ -4,16 +4,13 @@ import allure
 import pytest
 
 from utils.api_helpers import (
-    add_transactions_by_envelope_uuid,
     delete_transaction_by_uuid,
-    get_envelope_uuid,
     get_transactions_by_envelope_uuid,
 )
-from utils.logger_allure import attach_request, attach_response
-from utils.logger_console import log_response
+
 from utils.schema import validate_schema
 
-
+# @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.api
 @pytest.mark.regression
 @allure.label("layer", "API Tests")
@@ -24,35 +21,14 @@ from utils.schema import validate_schema
 @allure.link(
     "https://goodbudget.com/api/transactions/save", name="POST /api/transactions/save"
 )
-def test_delete_transaction_api(session_cookie, credentials):
+def test_delete_transaction_api(api_logger,api_steps, session_cookie, transactions_manager, credentials):
 
-    with allure.step("Prepare test data"):
-        envelope_name = "Hobby"
-        envelope_uuid = get_envelope_uuid(session_cookie, credentials, envelope_name)
-        txn_name = f"API transaction deleted № {random.randint(0, 100)}"
 
-    with allure.step("Send POST request to Create a transaction"):
-        txn_data = add_transactions_by_envelope_uuid(
-            session_cookie, credentials, txn_name, envelope_uuid
-        )
+    txn = transactions_manager.create("Hobby")
 
-    with allure.step("Send POST request to Delete a transaction"):
-        del_txn_data = delete_transaction_by_uuid(
-            session_cookie, credentials, txn_data["uuid"]
-        )
-        attach_request(del_txn_data["del_request"])
-        attach_response(del_txn_data["del_response"])
-        log_response(del_txn_data["del_response"])
+    transactions_manager.delete(txn["transaction_uuid"])
+    api_logger.commit_log()
+    api_steps.validate_schema(txn["response"],"transaction_save_response.json")
+    api_steps.assert_transaction_not_present(session_cookie, credentials, txn["envelope_uuid"], txn["transaction_uuid"])
 
-    with allure.step("Validate response structure and status code"):
-        assert del_txn_data["del_response"].status_code == 200
-        validate_schema(txn_data["response"].json(), "transaction_save_response.json")
 
-    with allure.step("Verify transaction presence via GET /api/transactions"):
-        txns = get_transactions_by_envelope_uuid(
-            session_cookie, credentials, envelope_uuid
-        )
-        items = txns.json().get("items", [])
-        assert all(
-            t.get("uuid") != txn_data["uuid"] for t in items
-        ), "Transaction still present after delete"
