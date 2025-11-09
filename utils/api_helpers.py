@@ -48,6 +48,7 @@ def get_envelope_uuid(session_cookie, credentials, envelope_name):
 def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelope_uuid):
     session = make_session(session_cookie)
     url = api_url(credentials, "/api/transactions")
+    time.sleep(2)
 
     response = session.get(
         url,
@@ -101,6 +102,7 @@ def add_transactions_by_envelope_uuid(
         "cookies": session_cookie,
     }
 
+    time.sleep(2)
     response = session.post(url, data=form_data, timeout=DEFAULT_TIMEOUT)
     assert_status_code(response, 200)
     api_logging.capture(request, response)
