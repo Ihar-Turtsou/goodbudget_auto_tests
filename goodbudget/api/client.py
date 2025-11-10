@@ -7,7 +7,11 @@ class GBApiClient:
         self.session = requests.Session()
 
     def login(self, username, password):
-        self.session.get(f"{self.base_url}/login", timeout=15)
+        resp_get = self.session.get(f"{self.base_url}/login", timeout=15)
+        assert (
+            resp_get.status_code == 200
+        ), f"Unexpected status: {resp_get.status_code}, body: {resp_get.text}"
+
         resp = self.session.post(
             f"{self.base_url}/login_check",
             data={"_username": username, "_password": password},

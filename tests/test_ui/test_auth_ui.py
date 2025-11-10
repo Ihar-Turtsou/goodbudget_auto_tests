@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-# @pytest.mark.skip(reason="This test is temporarily disabled.")
+
 @pytest.mark.ui
 @pytest.mark.regression
 @pytest.mark.usefixtures("setup_browser")
@@ -9,7 +9,7 @@ import pytest
 @allure.tag("web", "auth")
 @allure.feature("[WEB] Authentication")
 class TestAuthUi:
-    # @pytest.mark.skip(reason="This test is temporarily disabled.")
+
     @pytest.mark.smoke
     @allure.story("Login via UI on Web")
     @allure.severity(allure.severity_level.CRITICAL)
@@ -24,15 +24,11 @@ class TestAuthUi:
         )
         home_page.user_greeting_should_be(credentials["username"])
 
-    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @allure.story("Logout via UI on Web")
     @allure.severity(allure.severity_level.NORMAL)
     @allure.link("https://goodbudget.com/home", name="Home")
     def test_logout_ui(self, credentials, home_page, logout_page, temp_cookie):
 
-        (
-            home_page.open_home_with_cookie( temp_cookie
-            ).logout_from_account()
-        )
+        (home_page.open_home_with_cookie(temp_cookie).logout_from_account())
 
         logout_page.user_goodbye_should_be()

@@ -14,7 +14,7 @@ class HomePage:
                 "path": "/",
             }
         )
-        browser.open(f'/home')
+        browser.open(f"/home")
         return self
 
     @allure.step("Get Export CSV link (href)")

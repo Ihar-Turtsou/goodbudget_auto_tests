@@ -1,16 +1,7 @@
-import random
-
 import allure
 import pytest
 
-from utils.api_helpers import (
-    delete_transaction_by_uuid,
-    get_transactions_by_envelope_uuid,
-)
 
-from utils.schema import validate_schema
-
-# @pytest.mark.skip(reason="This test is temporarily disabled.")
 @pytest.mark.api
 @pytest.mark.regression
 @allure.label("layer", "API Tests")
@@ -21,14 +12,15 @@ from utils.schema import validate_schema
 @allure.link(
     "https://goodbudget.com/api/transactions/save", name="POST /api/transactions/save"
 )
-def test_delete_transaction_api(api_logger,api_steps, session_cookie, transactions_manager, credentials):
-
+def test_delete_transaction_api(
+    api_logger, api_steps, session_cookie, transactions_manager, credentials
+):
 
     txn = transactions_manager.create("Hobby")
 
     transactions_manager.delete(txn["transaction_uuid"])
     api_logger.commit_log()
-    api_steps.validate_schema(txn["response"],"transaction_save_response.json")
-    api_steps.assert_transaction_not_present(session_cookie, credentials, txn["envelope_uuid"], txn["transaction_uuid"])
-
-
+    api_steps.validate_schema(txn["response"], "transaction_save_response.json")
+    api_steps.assert_transaction_not_present(
+        session_cookie, credentials, txn["envelope_uuid"], txn["transaction_uuid"]
+    )

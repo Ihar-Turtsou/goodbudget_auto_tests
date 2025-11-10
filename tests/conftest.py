@@ -18,7 +18,9 @@ from goodbudget.mobile.screens.onboarding_screen import OnboardingScreen
 from goodbudget.ui.pages.home_page import HomePage
 from goodbudget.ui.pages.login_page import LoginPage
 from goodbudget.ui.pages.logout_page import LogoutPage
+from tests.contexts.api_logger_context import ApiLogger
 from tests.contexts.transactions_context import TransactionsContext
+from goodbudget.api.api_steps import ApiSteps
 from utils.attach import (
     add_html,
     add_logs,
@@ -69,9 +71,11 @@ def temp_cookie(credentials):
     client.close()
     return cookie
 
+
 @pytest.fixture
 def transactions_manager(session_cookie, credentials):
     return TransactionsContext(session_cookie, credentials)
+
 
 @pytest.fixture()
 def login_page():
@@ -107,11 +111,16 @@ def home_screen():
 def onboarding_screen():
     return OnboardingScreen()
 
-from goodbudget.api.api_steps import ApiSteps
 
 @pytest.fixture()
 def api_steps():
     return ApiSteps()
+
+
+@pytest.fixture
+def api_logger():
+    logger = ApiLogger()
+    yield logger
 
 
 @pytest.fixture(scope="function")
@@ -233,14 +242,3 @@ def mobile_driver(request):
 def mobile_browser(mobile_driver):
     browser.config.driver = mobile_driver
     yield browser
-
-
-
-from tests.contexts.api_logger_context import ApiLogger
-
-@pytest.fixture
-def api_logger():
-    logger = ApiLogger()
-    yield logger
-
-

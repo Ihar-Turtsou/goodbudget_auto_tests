@@ -5,10 +5,11 @@ import uuid
 
 import requests
 
-from utils.schema import validate_transaction_save_request
 from utils import api_logging
+from utils.schema import validate_transaction_save_request
 
 DEFAULT_TIMEOUT = 10
+
 
 def make_session(session_cookie):
     session = requests.Session()
@@ -20,8 +21,11 @@ def api_url(credentials, endpoint):
     base_url = credentials["base_url"].rstrip("/")
     return f"{base_url}{endpoint}"
 
+
 def assert_status_code(response, expected_status):
-    assert response.status_code == expected_status, f"Unexpected status: {response.status_code}, body: {response.text}"
+    assert (
+        response.status_code == expected_status
+    ), f"Unexpected status: {response.status_code}, body: {response.text}"
 
 
 def get_all_envelopes(session_cookie, credentials):
@@ -60,10 +64,7 @@ def get_transactions_by_envelope_uuid(session_cookie, credentials, value_envelop
     api_logging.capture(None, response)
     items = response.json().get("items", [])
 
-    return {
-        "response":response,
-        "items":items
-    }
+    return {"response": response, "items": items}
 
 
 def add_transactions_by_envelope_uuid(

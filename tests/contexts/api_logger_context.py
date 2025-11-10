@@ -22,4 +22,3 @@ class ApiLogger:
                 log_response(response)
             except Exception:
                 pass
-

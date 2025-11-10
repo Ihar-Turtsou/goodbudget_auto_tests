@@ -3,10 +3,7 @@ import random
 import allure
 import pytest
 
-from utils.api_helpers import (
-    get_envelope_uuid,
-    get_transactions_by_envelope_uuid,
-)
+from utils.api_helpers import get_envelope_uuid, get_transactions_by_envelope_uuid
 
 
 @pytest.mark.ui
@@ -16,9 +13,8 @@ from utils.api_helpers import (
 @allure.tag("web", "transactions")
 @allure.feature("[WEB] Manage transactions")
 @allure.link("https://goodbudget.com/home", name="Home")
-
 class TestTransactionUi:
-    # @pytest.mark.skip(reason="This test is temporarily disabled.")
+
     @pytest.mark.smoke
     @allure.story("Add transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.CRITICAL)
@@ -42,7 +38,6 @@ class TestTransactionUi:
             session_cookie, credentials, envelope_uuid
         )
 
-
         assert any(
             t.get("receiver") == transaction_name
             and t.get("amount") == f"{transaction_amount:.2f}"
@@ -50,11 +45,11 @@ class TestTransactionUi:
             for t in transactions["items"]
         ), f" Transaction '{transaction_name}' (amount={transaction_amount}) not found in envelope {envelope_uuid}"
 
+        transactions_manager.delete(
+            transaction_name=transaction_name,
+            envelope_transactions=transactions["items"],
+        )
 
-        transactions_manager.delete(transaction_name=transaction_name, envelope_transactions=transactions["items"])
-
-
-    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @allure.story("Edit transaction on Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_edit_transaction_ui(
@@ -80,7 +75,6 @@ class TestTransactionUi:
             session_cookie, credentials, transaction["envelope_uuid"]
         )
 
-
         assert any(
             t.get("receiver") == transaction_name_edited
             and t.get("amount") == f"{transaction_amount_edited:.2f}"
@@ -88,10 +82,8 @@ class TestTransactionUi:
             for t in transactions["items"]
         ), f" Transaction '{transaction_name_edited}' (amount={transaction_amount_edited}) not found in envelope {transaction["envelope_uuid"]}"
 
-
         transactions_manager.delete(transaction_uuid=transaction["transaction_uuid"])
 
-    # @pytest.mark.skip(reason="This test is temporarily disabled.")
     @allure.story("Delete transaction from Home (UI+API verify)")
     @allure.severity(allure.severity_level.NORMAL)
     def test_delete_transaction_ui(
@@ -111,8 +103,7 @@ class TestTransactionUi:
             session_cookie, credentials, transaction["envelope_uuid"]
         )
 
-        # print(json.dumps(transactions["items"], indent=2, ensure_ascii=False))
-
         assert all(
-            t.get("uuid") != transaction["transaction_uuid"] for t in transactions["items"]
+            t.get("uuid") != transaction["transaction_uuid"]
+            for t in transactions["items"]
         ), "Transaction still present after delete"
