@@ -39,10 +39,13 @@ class TransactionsContext:
         self, transaction_uuid=None, transaction_name=None, envelope_transactions=None
     ):
         if transaction_uuid:
-            delete_transaction_by_uuid(
+            transaction_del = delete_transaction_by_uuid(
                 self.session_cookie, self.credentials, transaction_uuid
             )
-            return
+            return {
+                "del_response": transaction_del["del_response"],
+                "del_request": transaction_del["del_request"]
+            }
         else:
             transaction_data = next(
                 (
