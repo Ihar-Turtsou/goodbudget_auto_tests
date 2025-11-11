@@ -1,3 +1,5 @@
+import allure
+
 from utils import api_logging
 from utils.logger_allure import attach_request, attach_response
 from utils.logger_console import log_response
@@ -9,7 +11,9 @@ class ApiLogger:
     def flush():
         api_logging.pop_all()
 
+
     @staticmethod
+    @allure.step("Attach API request/response")
     def commit_log():
 
         for request, response in api_logging.pop_all():
