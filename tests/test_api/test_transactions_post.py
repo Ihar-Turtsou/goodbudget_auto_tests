@@ -22,5 +22,4 @@ def test_add_transaction_api(
     api_steps.assert_transaction_present(
         session_cookie, credentials, txn["envelope_uuid"], txn["transaction_name"]
     )
-
     transactions_manager.delete(transaction_uuid=txn["transaction_uuid"])

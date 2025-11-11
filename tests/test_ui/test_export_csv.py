@@ -21,12 +21,9 @@ from utils.file_helpers import (
 def test_export_csv_ui(transactions_manager, session_cookie, credentials, home_page):
 
     transaction = transactions_manager.create("Extra")
-
     home_page.open_home_with_cookie(session_cookie)
     download_url = home_page.get_export_csv_link()
-
     csv_path = get_download_path("history.csv")
     download_file_from_url(download_url, session_cookie, csv_path)
     assert_csv_contains(csv_path, transaction["transaction_name"])
-
     transactions_manager.delete(transaction_uuid=transaction["transaction_uuid"])

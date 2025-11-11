@@ -24,5 +24,4 @@ def test_create_unregistered_account(
         .setup_budget_later()
         .confirm_modal()
     )
-
     home_screen.should_see_username("Unregistered")

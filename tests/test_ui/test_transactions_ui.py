@@ -24,7 +24,6 @@ class TestTransactionUi:
         transaction_name = f"Payment for rent {random.randint(0, 100)}"
         transaction_amount = random.randint(10, 300)
         envelope_uuid = get_envelope_uuid(session_cookie, credentials, "Groceries")
-
         (
             home_page.open_home_with_cookie(session_cookie)
             .add_transaction()
@@ -37,7 +36,6 @@ class TestTransactionUi:
         transactions = get_transactions_by_envelope_uuid(
             session_cookie, credentials, envelope_uuid
         )
-
         assert any(
             t.get("receiver") == transaction_name
             and t.get("amount") == f"{transaction_amount:.2f}"
@@ -57,10 +55,8 @@ class TestTransactionUi:
     ):
 
         transaction = transactions_manager.create("Gas")
-
         transaction_name_edited = f"Payment for gas {random.randint(0, 100)}"
         transaction_amount_edited = random.randint(300, 900)
-
         (
             home_page.open_home_with_cookie(session_cookie)
             .choose_envelope("Gas")
@@ -74,7 +70,6 @@ class TestTransactionUi:
         transactions = get_transactions_by_envelope_uuid(
             session_cookie, credentials, transaction["envelope_uuid"]
         )
-
         assert any(
             t.get("receiver") == transaction_name_edited
             and t.get("amount") == f"{transaction_amount_edited:.2f}"
@@ -91,14 +86,12 @@ class TestTransactionUi:
     ):
 
         transaction = transactions_manager.create("Chemical")
-
         (
             home_page.open_home_with_cookie(session_cookie)
             .choose_envelope("Chemical")
             .edit_transaction(transaction["transaction_name"])
             .delete_transaction_ui()
         )
-
         transactions = get_transactions_by_envelope_uuid(
             session_cookie, credentials, transaction["envelope_uuid"]
         )

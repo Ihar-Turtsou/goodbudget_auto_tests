@@ -20,14 +20,11 @@ class TestTransactionsGet:
     ):
 
         txn = transactions_manager.create("Hobby")
-
         response = api_steps.get_txn_data(
             txn["transaction_uuid"], credentials, session_cookie
         )
         api_logger.commit_log()
-
         api_steps.validate_schema(response, "transaction_get_response.json")
-
         transactions_manager.delete(txn["transaction_uuid"])
 
     @allure.story("List transactions by envelope")
@@ -40,12 +37,10 @@ class TestTransactionsGet:
     ):
 
         txn = transactions_manager.create("Hobby")
-
         response = api_steps.get_envelope_data(
             session_cookie, credentials, txn["envelope_uuid"]
         )
         api_logger.commit_log()
-
         api_steps.validate_schema(
             response["response"], "envelope_transactions_list_response.json"
         )

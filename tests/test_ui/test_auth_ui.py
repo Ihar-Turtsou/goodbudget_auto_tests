@@ -30,5 +30,4 @@ class TestAuthUi:
     def test_logout_ui(self, credentials, home_page, logout_page, temp_cookie):
 
         (home_page.open_home_with_cookie(temp_cookie).logout_from_account())
-
         logout_page.user_goodbye_should_be()
